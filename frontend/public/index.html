@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html ng-app="ProyectoCRUDApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Proyecto CRUD</title>
+
+    <!-- Bootstrap 3.5 -->
+    <link rel="stylesheet" href="/libs/bootstrap/css/bootstrap.min.css">
+
+    <!-- jQuery y Angular -->
+    <script src="libs/jquery/jquery.min.js"></script>
+    <script src="libs/angular/angular.min.js"></script>
+    <script src="libs/angular-route/angular-route.min.js"></script>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script src="services/authService.js"></script>
+    <script src="services/userService.js"></script>
+    <script src="controllers/userController.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body ng-controller="UserController as userCtrl">
+
+    <!-- HEADER -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Proyecto CRUD</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li ng-show="!userCtrl.isLoggedIn() && !userCtrl.showRegister">
+                    <a href="" ng-click="userCtrl.toggleRegister()">Registrarse</a>
+                </li>
+                <li ng-show="!userCtrl.isLoggedIn() && userCtrl.showRegister">
+                    <a href="" ng-click="userCtrl.toggleLogin()">Iniciar sesión</a>
+                </li>
+                <li ng-show="userCtrl.isLoggedIn()">
+                    <a href="" ng-click="userCtrl.logout()">Cerrar sesión</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- LOGIN -->
+        <div class="login-container" ng-show="!userCtrl.isLoggedIn() && !userCtrl.showRegister">
+            <div class="login-box">
+                <h3 class="text-center">Iniciar Sesión</h3>
+                <form ng-submit="userCtrl.login()">
+                    <div class="form-group">
+                        <input type="text" ng-model="userCtrl.loginData.username" placeholder="Usuario" class="form-control" required autofocus>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" ng-model="userCtrl.loginData.password" placeholder="Contraseña" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+                </form>
+                <div class="text-danger text-center" ng-show="userCtrl.loginError" style="margin-top:10px;">
+                    {{userCtrl.loginError}}
+                </div>
+            </div>
+        </div>
+
+        <!-- REGISTRO -->
+        <div class="login-container" ng-show="!userCtrl.isLoggedIn() && userCtrl.showRegister">
+            <div class="login-box">
+                <h3 class="text-center">Registrarse</h3>
+                <form ng-submit="userCtrl.register()">
+                    <div class="form-group">
+                        <input type="text" ng-model="userCtrl.registerData.username" placeholder="Usuario" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" ng-model="userCtrl.registerData.email" placeholder="Email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" ng-model="userCtrl.registerData.password" placeholder="Contraseña" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" ng-model="userCtrl.registerData.passwordRepeat" placeholder="Repetir contraseña" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block">Crear cuenta</button>
+                </form>
+
+                <div class="text-danger text-center" ng-show="userCtrl.registerError" style="margin-top:10px;">
+                    {{userCtrl.registerError}}
+                </div>
+                <div class="text-success text-center" ng-show="userCtrl.registerSuccess" style="margin-top:10px;">
+                    {{userCtrl.registerSuccess}}
+                </div>
+            </div>
+        </div>
+
+        <!-- APLICACIÓN -->
+        <div ng-show="userCtrl.isLoggedIn()">
+            <div class="row" style="margin-top:20px;">
+                <div class="col-xs-12">
+                    <h3>Bienvenido, <strong>{{userCtrl.currentUser.username}}</strong></h3>
+                </div>
+            </div>
+
+            <!-- ADMIN -->
+            <div ng-if="userCtrl.currentUser.is_admin" class="row" style="margin-top:20px;">
+                <div class="col-xs-12">
+                    <h4>Lista de Usuarios</h4>
+                    <button class="btn btn-success" ng-click="userCtrl.showCreateForm = true; userCtrl.editingUser = null; userCtrl.clearUserForm()">Agregar Usuario</button>
+
+                    <table class="table table-bordered table-hover" ng-if="userCtrl.users.length > 0" style="margin-top:10px;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Usuario</th>
+                                <th>Email</th>
+                                <th>Admin</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="user in userCtrl.users">
+                                <td>{{user.id}}</td>
+                                <td>{{user.username}}</td>
+                                <td>{{user.email}}</td>
+                                <td>{{user.is_admin ? 'Sí' : 'No'}}</td>
+                                <td>
+                                    <button class="btn btn-info btn-xs" ng-click="userCtrl.editUser(user)">Editar</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="userCtrl.deleteUser(user)">Eliminar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div ng-show="userCtrl.showCreateForm || userCtrl.editingUser" class="well" style="margin-top:20px; padding:15px;">
+                        <h4>{{userCtrl.editingUser ? 'Editar Usuario' : 'Crear Usuario'}}</h4>
+                        <form ng-submit="userCtrl.editingUser ? userCtrl.updateUser() : userCtrl.createUser()" novalidate>
+                            <div class="form-group">
+                                <input type="text" ng-model="userCtrl.userForm.username" placeholder="Usuario" ng-disabled="userCtrl.editingUser" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" ng-model="userCtrl.userForm.email" placeholder="Email" class="form-control" required>
+                            </div>
+                            <div class="form-group" ng-if="!userCtrl.editingUser">
+                                <input type="password" ng-model="userCtrl.userForm.password" placeholder="Contraseña" class="form-control" required>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-model="userCtrl.userForm.is_admin"> Admin
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">{{userCtrl.editingUser ? 'Actualizar' : 'Crear'}}</button>
+                            <button type="button" class="btn btn-default" ng-click="userCtrl.cancelEdit()">Cancelar</button>
+                        </form>
+                        <div class="text-danger" ng-show="userCtrl.formError" style="margin-top:10px;">{{userCtrl.formError}}</div>
+                        <div class="text-success" ng-show="userCtrl.formSuccess" style="margin-top:10px;">{{userCtrl.formSuccess}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- USUARIO NORMAL -->
+            <div ng-if="!userCtrl.currentUser.is_admin" class="row" style="margin-top:20px;">
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <h4>Perfil de Usuario</h4>
+                    <form ng-submit="userCtrl.updateUser()" novalidate>
+                        <div class="form-group">
+                            <label>Usuario:</label>
+                            <input type="text" ng-model="userCtrl.currentUser.username" class="form-control" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="email" ng-model="userCtrl.userForm.email" placeholder="Email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nueva Contraseña:</label>
+                            <input type="password" ng-model="userCtrl.userForm.password" placeholder="Opcional" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                    </form>
+                    <div class="text-danger" ng-show="userCtrl.formError" style="margin-top:10px;">{{userCtrl.formError}}</div>
+                    <div class="text-success" ng-show="userCtrl.formSuccess" style="margin-top:10px;">{{userCtrl.formSuccess}}</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <small>&copy; 2025 Proyecto CRUD. Todos los derechos reservados.</small>
+        </div>
+    </footer>
+
+</body>
+</html>

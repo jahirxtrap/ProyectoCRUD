@@ -1,0 +1,24 @@
+# Entorno virtual de Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+*.log
+
+# Archivos de instalación Python
+*.pyo
+*.pyd
+
+# Archivos temporales
+*.swp
+*.swo
+*.bak
+*.tmp
+*.DS_Store
+
+# Frontend
+frontend/node_modules/
+frontend/package-lock.json
