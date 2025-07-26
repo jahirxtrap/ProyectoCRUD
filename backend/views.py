@@ -3,6 +3,7 @@ from pyramid.security import authenticated_userid
 from pyramid.response import Response
 from pyramid.view import forbidden_view_config
 from .models import DBSession, User
+from sqlalchemy.exc import IntegrityError
 import logging
 import transaction
 import json
@@ -11,6 +12,7 @@ from passlib.hash import bcrypt
 login_service = Service(name='login', path='/api/login', description='Login Service')
 users_service = Service(name='users', path='/api/users', description='Users Service')
 register_service = Service(name='register', path='/api/users/register', description='Registro de usuario')
+logout_service = Service(name='logout', path='/api/logout', description='Logout Service')
 
 logger = logging.getLogger(__name__)
 
@@ -37,14 +39,12 @@ def get_users(request):
         return create_response({"error": "Permiso denegado"}, 403)
 
     users = DBSession.query(User).all()
-    result = []
-    for u in users:
-        result.append({
-            "id": u.id,
-            "username": u.username,
-            "email": u.email,
-            "is_admin": u.is_admin,
-        })
+    result = [{
+        "id": u.id,
+        "username": u.username,
+        "email": u.email,
+        "is_admin": u.is_admin,
+    } for u in users]
     return create_response({"users": result}, 200)
 
 # Crear usuario (solo admin)
@@ -68,18 +68,18 @@ def create_user(request):
     if not username or not email or not password:
         return create_response({"error": "Faltan campos obligatorios"}, 400)
 
-    existing_user = DBSession.query(User).filter((User.username==username) | (User.email==email)).first()
+    existing_user = DBSession.query(User).filter((User.username == username) | (User.email == email)).first()
     if existing_user:
         return create_response({"error": "Usuario o email ya existen"}, 409)
 
     hashed_pw = bcrypt.hash(password)
-
-    new_user = User(username=username, email=email, password=password, is_admin=is_admin)
+    new_user = User(username=username, email=email, password=hashed_pw, is_admin=is_admin)
     with transaction.manager:
         DBSession.add(new_user)
-        DBSession.commit()
+        DBSession.flush()
+        user_id = new_user.id
 
-    return create_response({"message": "Usuario creado", "user_id": new_user.id}, 200)
+    return create_response({"message": "Usuario creado", "user_id": user_id}, 200)
 
 # Obtener, editar o eliminar usuario por id
 user_detail = Service(name='user_detail', path='/api/users/{id}', description='User Detail Service')
@@ -139,7 +139,7 @@ def update_user(request):
             target_user.password = bcrypt.hash(data['password'])
 
     with transaction.manager:
-        DBSession.commit()
+        DBSession.flush()
     return create_response({"message": "Usuario actualizado"}, 200)
 
 @user_detail.delete()
@@ -160,7 +160,7 @@ def delete_user(request):
 
     with transaction.manager:
         DBSession.delete(target_user)
-        DBSession.commit()
+        DBSession.flush()
     return create_response({"message": "Usuario eliminado"}, 200)
 
 @login_service.post()
@@ -179,8 +179,6 @@ def login(request):
     # Guardar usuario en sesión
     request.session['userid'] = user.id
     return create_response({"message": "Login exitoso", "user_id": user.id, "is_admin": user.is_admin}, 200)
-
-logout_service = Service(name='logout', path='/api/logout', description='Logout Service')
 
 @logout_service.post()
 def logout(request):
@@ -206,10 +204,7 @@ def register_user(request):
             DBSession.flush()
         return create_response({'message': 'Usuario creado con éxito'}, 200)
     except IntegrityError:
-        with transaction.manager:
-            DBSession.rollback()
         return create_response({'error': 'Usuario o email ya registrado'}, 409)
     except Exception as e:
-        with transaction.manager:
-            DBSession.rollback()
+        logger.error(f"Error en registro: {e}")
         return create_response({'error': 'Error interno'}, 500)

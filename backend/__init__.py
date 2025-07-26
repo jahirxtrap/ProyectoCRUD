@@ -8,6 +8,7 @@ from .routes import includeme as routes_includeme
 
 def add_cors_tween(handler, registry):
     def cors_tween(request):
+        print(f"CORS tween ejecutado para {request.method} desde {request.headers.get('Origin')}")
         if request.method == 'OPTIONS':
             origin = request.headers.get('Origin')
             allowed_origins = [
@@ -27,6 +28,7 @@ def add_cors_tween(handler, registry):
 
 def main(global_config, **settings):
     config = Configurator(settings=settings)
+    print("Backend escuchando en http://localhost:5000")
 
     # Configuración de base de datos
     engine = engine_from_config(settings, 'sqlalchemy.')
