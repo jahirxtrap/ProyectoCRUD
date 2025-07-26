@@ -9,4 +9,8 @@ angular.module('ProyectoCRUDApp')
     this.logout = function() {
         return $http.post(baseUrl +'/logout', {}, { withCredentials: true });
     };
+
+    this.register = function(userData) {
+        return $http.post(baseUrl +'/users/register', userData, { withCredentials: true });
+    };
 }])

@@ -74,8 +74,7 @@ angular.module('ProyectoCRUDApp')
             password: vm.registerData.password
         };
 
-        $http.post('/api/users/register', dataToSend, { withCredentials: true })
-            .then(function(res) {
+        AuthService.register(dataToSend).then(function(response) {
                 vm.registerSuccess = "Registro exitoso. Ahora puedes iniciar sesión.";
                 vm.toggleLogin();
                 vm.registerData = {};
