@@ -113,19 +113,23 @@
                     <h4>Lista de Usuarios</h4>
                     <button class="btn btn-primary" ng-click="userCtrl.showCreateForm = true; userCtrl.editingUser = null; userCtrl.clearUserForm()">Agregar Usuario</button>
 
+                    <!-- CREAR / EDITAR USUARIO -->
                     <div ng-show="userCtrl.showCreateForm || userCtrl.editingUser" class="well" style="margin-top:20px;">
                         <h4>{{userCtrl.editingUser ? 'Editar Usuario' : 'Crear Usuario'}}</h4>
-                        <form ng-submit="userCtrl.editingUser ? userCtrl.updateUser() : userCtrl.createUser()" novalidate>
+                        <form ng-submit="userCtrl.editingUser ? userCtrl.updateUser() : userCtrl.createUser()">
                             <div class="form-group">
-                                <input type="text" ng-model="userCtrl.userForm.username" placeholder="Usuario" ng-disabled="userCtrl.editingUser" class="form-control" required>
+                                <label for="form-username">Usuario:</label>
+                                <input id="form-username" type="text" ng-model="userCtrl.userForm.username" placeholder="Usuario" ng-disabled="userCtrl.editingUser" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <input type="email" ng-model="userCtrl.userForm.email" placeholder="Email" class="form-control" required>
+                                <label for="form-email">Correo:</label>
+                                <input id="form-email" type="email" ng-model="userCtrl.userForm.email" placeholder="Correo" class="form-control" required>
                             </div>
                             <div class="form-group" ng-if="!userCtrl.editingUser">
-                                <input type="password" ng-model="userCtrl.userForm.password" placeholder="Contraseña" class="form-control" required>
+                                <label for="form-password">Contraseña:</label>
+                                <input id="form-password" type="password" ng-model="userCtrl.userForm.password" placeholder="Contraseña" class="form-control" required>
                             </div>
-                            <div class="checkbox">
+                            <div class="checkbox" style="margin-bottom:15px;">
                                 <label>
                                     <input type="checkbox" ng-model="userCtrl.userForm.is_admin"> Admin
                                 </label>
@@ -152,24 +156,24 @@
                             <select class="form-control" ng-model="userCtrl.searchField">
                                 <option value="id">Buscar por ID</option>
                                 <option value="username">Buscar por Usuario</option>
-                                <option value="email">Buscar por Email</option>
+                                <option value="email">Buscar por Correo</option>
                             </select>
                         </div>
 
-                        <div class="col-sm-3" style="margin-bottom: 10px; ">
+                        <div class="col-sm-3" style="margin-bottom: 10px;">
                             <label class="checkbox-inline">
-                                <input type="checkbox" ng-model="userCtrl.showOnlyAdmins"> Solo Administradores
+                                <input type="checkbox" ng-model="userCtrl.showOnlyAdmins"> Solo administradores
                             </label>
                         </div>
                     </div>
 
                     <!-- LISTA DE USUARIOS -->
                     <table class="table table-bordered table-hover" ng-if="userCtrl.users.length > 0" style="margin-top:10px;">
-                        <thead>
+                        <thead class="well">
                             <tr>
                                 <th class="text-center" style="width: 50px;">ID</th>
                                 <th class="text-center">Usuario</th>
-                                <th class="text-center">Email</th>
+                                <th class="text-center">Correo</th>
                                 <th class="text-center" style="width: 50px;">Admin</th>
                                 <th class="text-center" style="width: 200px;">Acciones</th>
                             </tr>
@@ -201,26 +205,28 @@
             </div>
 
             <!-- USUARIO NORMAL -->
-            <div ng-if="!userCtrl.currentUser.is_admin" class="row" style="margin-top:20px;">
-                <div class="col-xs-12 col-sm-6 col-md-4">
-                    <h4>Perfil de Usuario</h4>
-                    <form ng-submit="userCtrl.updateUser()" novalidate>
-                        <div class="form-group">
-                            <label>Usuario:</label>
-                            <input type="text" ng-model="userCtrl.currentUser.username" class="form-control" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label>Email:</label>
-                            <input type="email" ng-model="userCtrl.userForm.email" placeholder="Email" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Nueva Contraseña:</label>
-                            <input type="password" ng-model="userCtrl.userForm.password" placeholder="Opcional" class="form-control">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Actualizar</button>
-                    </form>
-                    <div class="text-danger" ng-show="userCtrl.formError" style="margin-top:10px;">{{userCtrl.formError}}</div>
-                    <div class="text-success" ng-show="userCtrl.formSuccess" style="margin-top:10px;">{{userCtrl.formSuccess}}</div>
+            <div ng-if="!userCtrl.currentUser.is_admin" class="row" style="margin-top:20px; margin-bottom:20px;">
+                <div class="col-xs-12">
+                    <div class="well">
+                        <h4>Perfil de Usuario</h4>
+                        <form ng-submit="userCtrl.updateUser()">
+                            <div class="form-group">
+                                <label for="username">Usuario:</label>
+                                <input id="username" type="text" ng-model="userCtrl.currentUser.username" class="form-control" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Correo:</label>
+                                <input id="email" type="email" ng-model="userCtrl.userForm.email" placeholder="Correo" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Nueva Contraseña:</label>
+                                <input id="password" type="password" ng-model="userCtrl.userForm.password" placeholder="Opcional" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Actualizar</button>
+                        </form>
+                        <div class="text-danger" ng-show="userCtrl.formError" style="margin-top:10px;">{{userCtrl.formError}}</div>
+                        <div class="text-success" ng-show="userCtrl.formSuccess" style="margin-top:10px;">{{userCtrl.formSuccess}}</div>
+                    </div>
                 </div>
             </div>
         </div>
