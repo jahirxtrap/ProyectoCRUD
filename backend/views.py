@@ -1,7 +1,5 @@
 from cornice import Service
-from pyramid.security import authenticated_userid
 from pyramid.response import Response
-from pyramid.view import forbidden_view_config
 from .models import DBSession, User
 from sqlalchemy.exc import IntegrityError
 import logging
@@ -11,8 +9,10 @@ from passlib.hash import bcrypt
 
 login_service = Service(name='login', path='/api/login', description='Login Service')
 users_service = Service(name='users', path='/api/users', description='Users Service')
-register_service = Service(name='register', path='/api/users/register', description='Registro de usuario')
+user_detail = Service(name='user_detail', path='/api/users/{id}', description='User Detail Service')
+register_service = Service(name='register', path='/api/register', description='Registro de usuario')
 logout_service = Service(name='logout', path='/api/logout', description='Logout Service')
+profile_service = Service(name='profile', path='/api/profile', description='Profile Service')
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,6 @@ def create_response(data, status_code):
 # Permite listar usuarios (solo admin)
 @users_service.get()
 def get_users(request):
-    # userid = authenticated_userid(request)
     userid = request.session.get('userid')
     if not userid:
         return create_response({"error": "No autenticado"}, 401)
@@ -50,7 +49,6 @@ def get_users(request):
 # Crear usuario (solo admin)
 @users_service.post()
 def create_user(request):
-    # userid = authenticated_userid(request)
     userid = request.session.get('userid')
     if not userid:
         return create_response({"error": "No autenticado"}, 401)
@@ -81,12 +79,8 @@ def create_user(request):
 
     return create_response({"message": "Usuario creado", "user_id": user_id}, 200)
 
-# Obtener, editar o eliminar usuario por id
-user_detail = Service(name='user_detail', path='/api/users/{id}', description='User Detail Service')
-
 @user_detail.get()
 def get_user(request):
-    # userid = authenticated_userid(request)
     userid = request.session.get('userid')
     if not userid:
         return create_response({"error": "No autenticado"}, 401)
@@ -110,7 +104,6 @@ def get_user(request):
 
 @user_detail.put()
 def update_user(request):
-    # userid = authenticated_userid(request)
     userid = request.session.get('userid')
     if not userid:
         return create_response({"error": "No autenticado"}, 401)
@@ -144,7 +137,6 @@ def update_user(request):
 
 @user_detail.delete()
 def delete_user(request):
-    # userid = authenticated_userid(request)
     userid = request.session.get('userid')
     if not userid:
         return create_response({"error": "No autenticado"}, 401)
@@ -208,3 +200,21 @@ def register_user(request):
     except Exception as e:
         logger.error(f"Error en registro: {e}")
         return create_response({'error': 'Error interno'}, 500)
+
+@profile_service.get()
+def profile(request):
+    user_id = request.session.get('userid')
+    if not user_id:
+        return create_response({'error': 'No autenticado'}, 401)
+
+    user = DBSession.query(User).filter_by(id=user_id).first()
+    if not user:
+        request.session.invalidate()
+        return create_response({'error': 'Usuario no encontrado'}, 404)
+
+    return create_response({
+        'user_id':   user.id,
+        'username':  user.username,
+        'email':     user.email,
+        'is_admin':  user.is_admin,
+    }, 200)

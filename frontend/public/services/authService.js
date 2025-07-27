@@ -11,6 +11,10 @@ angular.module('ProyectoCRUDApp')
     };
 
     this.register = function(userData) {
-        return $http.post(baseUrl +'/users/register', userData, { withCredentials: true });
+        return $http.post(baseUrl +'/register', userData, { withCredentials: true });
+    };
+
+    this.profile = function() {
+        return $http.get(baseUrl +'/profile', { withCredentials: true });
     };
 }])

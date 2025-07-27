@@ -23,9 +23,30 @@ angular.module('ProyectoCRUDApp')
     vm.formSuccess = null;
 
     // --- Control de autenticación ---
-
     vm.isLoggedIn = function() {
         return vm.currentUser !== null;
+    };
+
+    // función para inicializar el estado al cargar la página
+    vm.init = function () {
+        AuthService.profile().then(function (response) {
+            vm.currentUser = {
+                id: response.data.user_id,
+                username: response.data.username,
+                email: response.data.email,
+                is_admin: response.data.is_admin
+            };
+            vm.showLogin = false;
+
+            if (vm.currentUser.is_admin) {
+                vm.loadUsers();
+            } else {
+                vm.loadCurrentUserProfile();
+            }
+
+        }, function () {
+            vm.resetState();
+        });
     };
 
     vm.login = function() {
@@ -85,7 +106,6 @@ angular.module('ProyectoCRUDApp')
     };
 
     // --- Toggle entre login y registro ---
-
     vm.toggleLogin = function() {
         vm.showLogin = true;
         vm.showRegister = false;
@@ -107,7 +127,6 @@ angular.module('ProyectoCRUDApp')
     };
 
     // --- CRUD de usuarios ---
-
     vm.loadUsers = function() {
         UserService.getUsers().then(function(response) {
             vm.users = response.data.users;
@@ -204,4 +223,6 @@ angular.module('ProyectoCRUDApp')
         vm.showRegister = false;
         vm.clearMessages();
     };
+
+    vm.init();
 }]);

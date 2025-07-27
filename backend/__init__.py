@@ -1,7 +1,5 @@
 from pyramid.config import Configurator
-from pyramid.session import SignedCookieSessionFactory
 from pyramid.response import Response
-from pyramid_redis_sessions import session_factory_from_settings
 from sqlalchemy import engine_from_config
 from .models import DBSession, Base, create_admin_user
 from .routes import includeme as routes_includeme
@@ -42,8 +40,7 @@ def main(global_config, **settings):
     create_admin_user()
 
     # Sesiones con Redis
-    session_factory = session_factory_from_settings(settings)
-    config.set_session_factory(session_factory)
+    config.include('pyramid_redis_sessions')
 
     config.include('pyramid_jinja2')
     config.include('cornice')
