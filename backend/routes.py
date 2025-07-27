@@ -1,5 +1,3 @@
-from pyramid.response import Response
-
 def includeme(config):
     config.add_route('home', '/')
     config.add_route('users', '/api/users')
