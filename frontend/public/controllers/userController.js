@@ -22,6 +22,11 @@ angular.module('ProyectoCRUDApp')
     vm.formError = null;
     vm.formSuccess = null;
 
+    // Filtros
+    vm.searchText = '';
+    vm.searchField = 'username';
+    vm.showOnlyAdmins = false;
+
     // --- Control de autenticación ---
     vm.isLoggedIn = function() {
         return vm.currentUser !== null;
@@ -103,6 +108,25 @@ angular.module('ProyectoCRUDApp')
             .catch(function(err) {
                 vm.registerError = err.data.error || "Error en el registro.";
             });
+    };
+
+    // --- Filtros de búsqueda ---
+    vm.filteredUsers = function(user) {
+        var field = vm.searchField;
+        var searchText = (vm.searchText || '').toLowerCase();
+
+        if (searchText) {
+            var value = (user[field] || '').toString().toLowerCase();
+            if (value.indexOf(searchText) === -1) {
+                return false;
+            }
+        }
+
+        if (vm.showOnlyAdmins && !user.is_admin) {
+            return false;
+        }
+
+        return true;
     };
 
     // --- Toggle entre login y registro ---

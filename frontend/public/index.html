@@ -101,43 +101,19 @@
 
         <!-- APLICACIÓN -->
         <div ng-show="userCtrl.isLoggedIn()">
-            <div class="row" style="margin-top:20px;">
+            <div class="row">
                 <div class="col-xs-12">
                     <h3>Bienvenido, <strong>{{userCtrl.currentUser.username}}</strong></h3>
                 </div>
             </div>
 
             <!-- ADMIN -->
-            <div ng-if="userCtrl.currentUser.is_admin" class="row" style="margin-top:20px;">
+            <div ng-if="userCtrl.currentUser.is_admin" class="row" style="margin-top:20px; margin-bottom:20px;">
                 <div class="col-xs-12">
                     <h4>Lista de Usuarios</h4>
-                    <button class="btn btn-success" ng-click="userCtrl.showCreateForm = true; userCtrl.editingUser = null; userCtrl.clearUserForm()">Agregar Usuario</button>
+                    <button class="btn btn-primary" ng-click="userCtrl.showCreateForm = true; userCtrl.editingUser = null; userCtrl.clearUserForm()">Agregar Usuario</button>
 
-                    <table class="table table-bordered table-hover" ng-if="userCtrl.users.length > 0" style="margin-top:10px;">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Usuario</th>
-                                <th>Email</th>
-                                <th>Admin</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="user in userCtrl.users">
-                                <td>{{user.id}}</td>
-                                <td>{{user.username}}</td>
-                                <td>{{user.email}}</td>
-                                <td>{{user.is_admin ? 'Sí' : 'No'}}</td>
-                                <td>
-                                    <button class="btn btn-info btn-xs" ng-click="userCtrl.editUser(user)">Editar</button>
-                                    <button class="btn btn-danger btn-xs" ng-click="userCtrl.deleteUser(user)">Eliminar</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div ng-show="userCtrl.showCreateForm || userCtrl.editingUser" class="well" style="margin-top:20px; padding:15px;">
+                    <div ng-show="userCtrl.showCreateForm || userCtrl.editingUser" class="well" style="margin-top:20px;">
                         <h4>{{userCtrl.editingUser ? 'Editar Usuario' : 'Crear Usuario'}}</h4>
                         <form ng-submit="userCtrl.editingUser ? userCtrl.updateUser() : userCtrl.createUser()" novalidate>
                             <div class="form-group">
@@ -160,6 +136,67 @@
                         <div class="text-danger" ng-show="userCtrl.formError" style="margin-top:10px;">{{userCtrl.formError}}</div>
                         <div class="text-success" ng-show="userCtrl.formSuccess" style="margin-top:10px;">{{userCtrl.formSuccess}}</div>
                     </div>
+
+                    <!-- FILTROS -->
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-sm-6" style="margin-bottom: 10px;">
+                            <div class="input-group">
+                                <input type="text" ng-model="userCtrl.searchText" class="form-control" placeholder="Buscar...">
+                                <span class="input-group-addon">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3" style="margin-bottom: 10px;">
+                            <select class="form-control" ng-model="userCtrl.searchField">
+                                <option value="id">Buscar por ID</option>
+                                <option value="username">Buscar por Usuario</option>
+                                <option value="email">Buscar por Email</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm-3" style="margin-bottom: 10px; ">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" ng-model="userCtrl.showOnlyAdmins"> Solo Administradores
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- LISTA DE USUARIOS -->
+                    <table class="table table-bordered table-hover" ng-if="userCtrl.users.length > 0" style="margin-top:10px;">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 50px;">ID</th>
+                                <th class="text-center">Usuario</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center" style="width: 50px;">Admin</th>
+                                <th class="text-center" style="width: 200px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="user in userCtrl.users | filter:userCtrl.filteredUsers">
+                                <td class="text-center">{{user.id}}</td>
+                                <td>{{user.username}}</td>
+                                <td>{{user.email}}</td>
+                                <td class="text-center">
+                                    <span class="label label-{{user.is_admin ? 'success' : 'default'}}">
+                                        {{user.is_admin ? 'Sí' : 'No'}}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-info btn-xs" ng-click="userCtrl.editUser(user)">
+                                            <span class="glyphicon glyphicon-pencil"></span> Editar
+                                        </button>
+                                        <button class="btn btn-danger btn-xs" ng-click="userCtrl.deleteUser(user)">
+                                            <span class="glyphicon glyphicon-trash"></span> Eliminar
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
