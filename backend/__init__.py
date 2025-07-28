@@ -1,40 +1,42 @@
 from pyramid.config import Configurator
+from pyramid.paster import get_appsettings
 from pyramid.response import Response
 from sqlalchemy import engine_from_config
 from .models import DBSession, Base, create_admin_user
 from .routes import includeme as routes_includeme
-
+import configparser
+import os
 
 def add_cors_tween(handler, registry):
     def cors_tween(request):
-        allowed_origins = [
-            "http://localhost:3000",
-        ]
         origin = request.headers.get("Origin")
 
         def add_cors_headers(response):
-            if origin in allowed_origins:
-                response.headers.update({
-                    "Access-Control-Allow-Origin": origin,
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-                    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-                    "Access-Control-Allow-Credentials": "true",
-                })
+            response.headers.update({
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Credentials": "true",
+            })
             return response
 
         if request.method == "OPTIONS":
-            if origin in allowed_origins:
-                return add_cors_headers(Response(status=200))
-            else:
-                return Response({"error": "Origen no permitido"}, status=403)
+            return add_cors_headers(Response(status=200))
 
+        print(f"CORS tween ejecutado para {request.method} desde {origin}")
         response = handler(request)
         return add_cors_headers(response)
     return cors_tween
 
 def main(global_config, **settings):
+    secret = os.environ.get('REDIS_SESSION_SECRET', 'fallback-secret')
+    settings['redis.sessions.secret'] = secret
+
     config = Configurator(settings=settings)
-    print("Backend escuchando en http://localhost:5000")
+
+    parser = configparser.ConfigParser()
+    parser.read(global_config['__file__'])
+    print(f"Backend escuchando en http://{parser['server:main']['listen']}")
 
     # Configuración de base de datos
     engine = engine_from_config(settings, "sqlalchemy.")

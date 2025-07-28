@@ -1,5 +1,5 @@
 angular.module("ProyectoCRUDApp")
-.controller("UserController", ["AuthService", "UserService", "$http", function(AuthService, UserService, $http) {
+.controller("UserController", ["UserService", "$http", function(UserService, $http) {
     var vm = this;
 
     // Estado y datos
@@ -34,7 +34,7 @@ angular.module("ProyectoCRUDApp")
 
     // función para inicializar el estado al cargar la página
     vm.init = function () {
-        AuthService.profile().then(function (response) {
+        UserService.profile().then(function (response) {
             vm.currentUser = {
                 id: response.data.id,
                 username: response.data.username,
@@ -55,7 +55,7 @@ angular.module("ProyectoCRUDApp")
 
     vm.login = function() {
         vm.loginError = null;
-        AuthService.login(vm.loginData).then(function(response) {
+        UserService.login(vm.loginData).then(function(response) {
             vm.currentUser = {
                 id: response.data.id,
                 username: vm.loginData.username,
@@ -75,7 +75,7 @@ angular.module("ProyectoCRUDApp")
     };
 
     vm.logout = function() {
-        AuthService.logout().then(function() {
+        UserService.logout().then(function() {
             vm.resetState();
         });
     };
@@ -100,7 +100,7 @@ angular.module("ProyectoCRUDApp")
             password: vm.registerData.password
         };
 
-        AuthService.register(dataToSend).then(function(response) {
+        UserService.register(dataToSend).then(function(response) {
                 vm.registerSuccess = "Registro exitoso. Ahora puedes iniciar sesión.";
                 vm.toggleLogin();
                 vm.registerData = {};
