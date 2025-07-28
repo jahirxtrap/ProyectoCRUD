@@ -59,14 +59,19 @@
                     <div class="form-group">
                         <input type="text" ng-model="userCtrl.loginData.username" placeholder="Usuario" class="form-control" required autofocus>
                     </div>
-                    <div class="form-group">
-                        <input type="password" ng-model="userCtrl.loginData.password" placeholder="Contraseña" class="form-control" required>
+                    <div class="form-group" ng-init="showPassLogin = false">
+                        <div class="input-group">
+                            <input type="{{showPassLogin ? 'text' : 'password'}}" ng-model="userCtrl.loginData.password" placeholder="Contraseña" class="form-control" required>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="showPassLogin = !showPassLogin" ng-mousedown="$event.preventDefault()">
+                                    <span class="glyphicon" ng-class="showPassLogin ? 'glyphicon-eye-open' : 'glyphicon-eye-close'"></span>
+                                </button>
+                            </span>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
                 </form>
-                <div class="text-danger text-center" ng-show="userCtrl.loginError" style="margin-top:10px;">
-                    {{userCtrl.loginError}}
-                </div>
+                <div class="text-danger text-center" ng-show="userCtrl.loginError" style="margin-top:10px;">{{userCtrl.loginError}}</div>
             </div>
         </div>
 
@@ -79,23 +84,33 @@
                         <input type="text" ng-model="userCtrl.registerData.username" placeholder="Usuario" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" ng-model="userCtrl.registerData.email" placeholder="Email" class="form-control" required>
+                        <input type="email" ng-model="userCtrl.registerData.email" placeholder="alguien@example.com" class="form-control" required>
                     </div>
-                    <div class="form-group">
-                        <input type="password" ng-model="userCtrl.registerData.password" placeholder="Contraseña" class="form-control" required>
+                    <div class="form-group" ng-init="showPassRegister1 = false">
+                        <div class="input-group">
+                            <input type="{{showPassRegister1 ? 'text' : 'password'}}" ng-model="userCtrl.registerData.password" placeholder="Contraseña" class="form-control" required>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="showPassRegister1 = !showPassRegister1" ng-mousedown="$event.preventDefault()">
+                                    <span class="glyphicon" ng-class="showPassRegister1 ? 'glyphicon-eye-open' : 'glyphicon-eye-close'"></span>
+                                </button>
+                            </span>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <input type="password" ng-model="userCtrl.registerData.passwordRepeat" placeholder="Repetir contraseña" class="form-control" required>
+                    <div class="form-group" ng-init="showPassRegister2 = false">
+                        <div class="input-group">
+                            <input type="{{showPassRegister2 ? 'text' : 'password'}}" ng-model="userCtrl.registerData.passwordRepeat" placeholder="Repetir contraseña" class="form-control" required>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="showPassRegister2 = !showPassRegister2" ng-mousedown="$event.preventDefault()">
+                                    <span class="glyphicon" ng-class="showPassRegister2 ? 'glyphicon-eye-open' : 'glyphicon-eye-close'"></span>
+                                </button>
+                            </span>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-success btn-block">Crear cuenta</button>
                 </form>
 
-                <div class="text-danger text-center" ng-show="userCtrl.registerError" style="margin-top:10px;">
-                    {{userCtrl.registerError}}
-                </div>
-                <div class="text-success text-center" ng-show="userCtrl.registerSuccess" style="margin-top:10px;">
-                    {{userCtrl.registerSuccess}}
-                </div>
+                <div class="text-danger text-center" ng-show="userCtrl.registerError" style="margin-top:10px;">{{userCtrl.registerError}}</div>
+                <div class="text-success text-center" ng-show="userCtrl.registerSuccess" style="margin-top:10px;">{{userCtrl.registerSuccess}}</div>
             </div>
         </div>
 
@@ -119,15 +134,22 @@
                         <form ng-submit="userCtrl.editingUser ? userCtrl.updateUser() : userCtrl.createUser()">
                             <div class="form-group">
                                 <label for="form-username">Usuario:</label>
-                                <input id="form-username" type="text" ng-model="userCtrl.userForm.username" placeholder="Usuario" ng-disabled="userCtrl.editingUser" class="form-control" required>
+                                <input id="form-username" type="text" ng-model="userCtrl.userForm.username" placeholder="Usuario" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label for="form-email">Correo:</label>
-                                <input id="form-email" type="email" ng-model="userCtrl.userForm.email" placeholder="Correo" class="form-control" required>
+                                <input id="form-email" type="email" ng-model="userCtrl.userForm.email" placeholder="alguien@example.com" class="form-control" required>
                             </div>
-                            <div class="form-group" ng-if="!userCtrl.editingUser">
+                            <div class="form-group" ng-if="!userCtrl.editingUser" ng-init="showPassAdmin = false">
                                 <label for="form-password">Contraseña:</label>
-                                <input id="form-password" type="password" ng-model="userCtrl.userForm.password" placeholder="Contraseña" class="form-control" required>
+                                <div class="input-group">
+                                    <input id="form-password" type="{{showPassAdmin ? 'text' : 'password'}}" ng-model="userCtrl.userForm.password" placeholder="Contraseña" class="form-control" required>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="showPassAdmin = !showPassAdmin" ng-mousedown="$event.preventDefault()">
+                                            <span class="glyphicon" ng-class="showPassAdmin ? 'glyphicon-eye-open' : 'glyphicon-eye-close'"></span>
+                                        </button>
+                                    </span>
+                                </div>
                             </div>
                             <div class="checkbox" style="margin-bottom:15px;">
                                 <label>
@@ -137,8 +159,8 @@
                             <button type="submit" class="btn btn-primary">{{userCtrl.editingUser ? 'Actualizar' : 'Crear'}}</button>
                             <button type="button" class="btn btn-default" ng-click="userCtrl.cancelEdit()">Cancelar</button>
                         </form>
-                        <div class="text-danger" ng-show="userCtrl.formError" style="margin-top:10px;">{{userCtrl.formError}}</div>
-                        <div class="text-success" ng-show="userCtrl.formSuccess" style="margin-top:10px;">{{userCtrl.formSuccess}}</div>
+                        <!-- <div class="text-danger" ng-show="userCtrl.formError" style="margin-top:10px;">{{userCtrl.formError}}</div> -->
+                        <!-- <div class="text-success" ng-show="userCtrl.formSuccess" style="margin-top:10px;">{{userCtrl.formSuccess}}</div> -->
                     </div>
 
                     <!-- FILTROS -->
@@ -216,11 +238,18 @@
                             </div>
                             <div class="form-group">
                                 <label for="email">Correo:</label>
-                                <input id="email" type="email" ng-model="userCtrl.userForm.email" placeholder="Correo" class="form-control" required>
+                                <input id="email" type="email" ng-model="userCtrl.currentUser.email" placeholder="alguien@example.com" class="form-control" required>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" ng-init="showPassNormal = false">
                                 <label for="password">Nueva Contraseña:</label>
-                                <input id="password" type="password" ng-model="userCtrl.userForm.password" placeholder="Opcional" class="form-control">
+                                <div class="input-group">
+                                    <input id="password" type="{{showPassNormal ? 'text' : 'password'}}" ng-model="userCtrl.userForm.password" placeholder="Opcional" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="showPassNormal = !showPassNormal" ng-mousedown="$event.preventDefault()">
+                                            <span class="glyphicon" ng-class="showPassNormal ? 'glyphicon-eye-open' : 'glyphicon-eye-close'"></span>
+                                        </button>
+                                    </span>
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary">Actualizar</button>
                         </form>

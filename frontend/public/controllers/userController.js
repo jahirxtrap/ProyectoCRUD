@@ -1,5 +1,5 @@
-angular.module('ProyectoCRUDApp')
-.controller('UserController', ['AuthService', 'UserService', '$http', function(AuthService, UserService, $http) {
+angular.module("ProyectoCRUDApp")
+.controller("UserController", ["AuthService", "UserService", "$http", function(AuthService, UserService, $http) {
     var vm = this;
 
     // Estado y datos
@@ -23,8 +23,8 @@ angular.module('ProyectoCRUDApp')
     vm.formSuccess = null;
 
     // Filtros
-    vm.searchText = '';
-    vm.searchField = 'username';
+    vm.searchText = "";
+    vm.searchField = "username";
     vm.showOnlyAdmins = false;
 
     // --- Control de autenticación ---
@@ -36,7 +36,7 @@ angular.module('ProyectoCRUDApp')
     vm.init = function () {
         AuthService.profile().then(function (response) {
             vm.currentUser = {
-                id: response.data.user_id,
+                id: response.data.id,
                 username: response.data.username,
                 email: response.data.email,
                 is_admin: response.data.is_admin
@@ -48,7 +48,6 @@ angular.module('ProyectoCRUDApp')
             } else {
                 vm.loadCurrentUserProfile();
             }
-
         }, function () {
             vm.resetState();
         });
@@ -58,11 +57,12 @@ angular.module('ProyectoCRUDApp')
         vm.loginError = null;
         AuthService.login(vm.loginData).then(function(response) {
             vm.currentUser = {
-                id: response.data.user_id,
+                id: response.data.id,
                 username: vm.loginData.username,
                 is_admin: response.data.is_admin,
             };
             vm.loginData = {};
+
             if (vm.currentUser.is_admin) {
                 vm.loadUsers();
             } else {
@@ -70,7 +70,7 @@ angular.module('ProyectoCRUDApp')
             }
             vm.showLogin = false;
         }, function(error) {
-            vm.loginError = error.data.error || 'Error al iniciar sesión';
+            vm.loginError = error.data.error || "Error al iniciar sesión";
         });
     };
 
@@ -113,10 +113,10 @@ angular.module('ProyectoCRUDApp')
     // --- Filtros de búsqueda ---
     vm.filteredUsers = function(user) {
         var field = vm.searchField;
-        var searchText = (vm.searchText || '').toLowerCase();
+        var searchText = (vm.searchText || "").toLowerCase();
 
         if (searchText) {
-            var value = (user[field] || '').toString().toLowerCase();
+            var value = (user[field] || "").toString().toLowerCase();
             if (value.indexOf(searchText) === -1) {
                 return false;
             }
@@ -143,11 +143,11 @@ angular.module('ProyectoCRUDApp')
     };
 
     vm.clearMessages = function() {
-        vm.loginError = '';
-        vm.registerError = '';
-        vm.registerSuccess = '';
-        vm.formError = '';
-        vm.formSuccess = '';
+        vm.loginError = "";
+        vm.registerError = "";
+        vm.registerSuccess = "";
+        vm.formError = "";
+        vm.formSuccess = "";
     };
 
     // --- CRUD de usuarios ---
@@ -214,7 +214,7 @@ angular.module('ProyectoCRUDApp')
                 vm.loadUsers();
             } else {
                 vm.loadCurrentUserProfile();
-                vm.userForm.password = '';
+                vm.userForm.password = "";
             }
         }, function(error) {
             vm.formError = error.data.error || "Error al actualizar usuario";
@@ -222,7 +222,7 @@ angular.module('ProyectoCRUDApp')
     };
 
     vm.deleteUser = function(user) {
-        if (confirm('¿Eliminar usuario ' + user.username + '?')) {
+        if (confirm("¿Eliminar usuario " + user.username + "?")) {
             UserService.deleteUser(user.id).then(function(response) {
                 vm.loadUsers();
             }, function(error) {

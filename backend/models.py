@@ -34,7 +34,7 @@ def create_admin_user():
         password=hashed_password,
         is_admin=True
     )
-    DBSession.add(admin)
 
+    DBSession.add(admin)
     transaction.commit()
     print("Usuario admin creado.")

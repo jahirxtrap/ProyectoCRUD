@@ -1,4 +1,4 @@
-angular.module('ProyectoCRUDApp', ['ngRoute'])
-.config(['$httpProvider', function($httpProvider) {
+angular.module("ProyectoCRUDApp", ["ngRoute"])
+.config(($httpProvider) => {
     $httpProvider.defaults.withCredentials = true;
-}]);
+});
