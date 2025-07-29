@@ -13,7 +13,7 @@ def add_cors_tween(handler, registry):
 
         def add_cors_headers(response):
             response.headers.update({
-                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Origin": origin if origin is not None else "*",
                 "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
                 "Access-Control-Allow-Credentials": "true",

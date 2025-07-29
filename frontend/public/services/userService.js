@@ -1,6 +1,6 @@
 angular.module("ProyectoCRUDApp")
 .service("UserService", ["$http", function($http) {
-    const baseUrl = "http://localhost:5000/api";
+    const baseUrl = "http://192.168.1.11:5000/api";
 
     this.login = (data) => $http.post(baseUrl + "/login", data);
     this.logout = () => $http.post(baseUrl + "/logout");
