@@ -1,4 +1,4 @@
-package com.jahirtrap.crudapp
+package com.jahirtrap.crudapp.api
 
 import okhttp3.Cookie
 import okhttp3.CookieJar

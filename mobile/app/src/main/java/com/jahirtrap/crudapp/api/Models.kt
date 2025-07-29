@@ -1,4 +1,4 @@
-package com.jahirtrap.crudapp
+package com.jahirtrap.crudapp.api
 
 data class LoginRequest(
     val username: String,

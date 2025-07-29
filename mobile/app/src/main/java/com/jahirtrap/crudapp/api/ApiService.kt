@@ -1,4 +1,4 @@
-package com.jahirtrap.crudapp
+package com.jahirtrap.crudapp.api
 
 import retrofit2.Call
 import retrofit2.http.Body

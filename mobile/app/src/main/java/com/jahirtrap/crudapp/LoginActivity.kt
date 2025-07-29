@@ -6,6 +6,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.jahirtrap.crudapp.api.LoginRequest
+import com.jahirtrap.crudapp.api.LoginResponse
+import com.jahirtrap.crudapp.api.RetrofitInstance
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,7 +46,6 @@ class LoginActivity : AppCompatActivity() {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful && response.body() != null) {
                     val user = response.body()!!
-                    // Puedes guardar la sesión aquí si lo deseas
                     if (user.is_admin) {
                         startActivity(Intent(this@LoginActivity, AdminUsersActivity::class.java))
                     } else {

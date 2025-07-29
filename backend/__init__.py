@@ -1,5 +1,4 @@
 from pyramid.config import Configurator
-from pyramid.paster import get_appsettings
 from pyramid.response import Response
 from sqlalchemy import engine_from_config
 from .models import DBSession, Base, create_admin_user
@@ -45,11 +44,8 @@ def main(global_config, **settings):
 
     # Crear tablas en la base de datos si no existen
     Base.metadata.create_all(bind=engine)
-
-    # Crear admin si no existe
     create_admin_user()
 
-    # Sesiones con Redis
     config.include("pyramid_redis_sessions")
 
     config.include("pyramid_jinja2")

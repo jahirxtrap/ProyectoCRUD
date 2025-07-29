@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def create_response(data, status_code):
     return Response(json.dumps(data), content_type="application/json; charset=utf-8", status=status_code)
 
-# Permite listar usuarios (solo admin)
+# Listar usuarios (solo admin)
 @users_service.get()
 def get_users(request):
     session_user_id = request.session.get("session_user_id")
@@ -72,6 +72,7 @@ def create_user(request):
 
     return create_response({"message": "Usuario creado", "id": user_id}, 200)
 
+# Obtener datos de usuario
 @user_detail_service.get()
 def get_user(request):
     session_user_id = request.session.get("session_user_id")
@@ -84,7 +85,6 @@ def get_user(request):
     if not target_user:
         return create_response({"error": "Usuario no encontrado"}, 404)
 
-    # Solo admin o el mismo usuario puede ver
     if not current_user.is_admin and current_user.id != target_user.id:
         return create_response({"error": "Permiso denegado"}, 403)
 
@@ -95,6 +95,7 @@ def get_user(request):
         "is_admin": target_user.is_admin,
     }, 200)
 
+# Actualizar usuario
 @user_detail_service.put()
 def update_user(request):
     session_user_id = request.session.get("session_user_id")
@@ -107,12 +108,11 @@ def update_user(request):
     if not target_user:
         return create_response({"error": "Usuario no encontrado"}, 404)
 
-    # Solo admin o el mismo usuario puede editar
     if not current_user.is_admin and current_user.id != target_user.id:
         return create_response({"error": "Permiso denegado"}, 403)
 
     data = request.json_body
-    # Admin puede editar todo, usuario normal solo puede editar email y password
+
     if current_user.is_admin:
         target_user.username = data.get("username", target_user.username)
         target_user.email = data.get("email", target_user.email)
@@ -129,6 +129,7 @@ def update_user(request):
         DBSession.flush()
     return create_response({"message": "Usuario actualizado"}, 200)
 
+# Eliminar usuario
 @user_detail_service.delete()
 def delete_user(request):
     session_user_id = request.session.get("session_user_id")
@@ -149,6 +150,7 @@ def delete_user(request):
         DBSession.flush()
     return create_response({"message": "Usuario eliminado"}, 200)
 
+# Iniciar sesión
 @login_service.post()
 def login(request):
     data = request.json_body
@@ -162,15 +164,16 @@ def login(request):
     if not bcrypt.verify(password, user.password):
         return create_response({"error": "Contraseña incorrecta"}, 401)
 
-    # Guardar usuario en sesión
     request.session["session_user_id"] = user.id
     return create_response({"message": "Login exitoso", "id": user.id, "is_admin": user.is_admin}, 200)
 
+# Cerrar sesión
 @logout_service.post()
 def logout(request):
     request.session.invalidate()
     return create_response({"message": "Logout exitoso"}, 200)
 
+# Registro de usuario
 @register_service.post()
 def register_user(request):
     data = request.json_body
@@ -195,6 +198,7 @@ def register_user(request):
         logger.error(f"Error en registro: {e}")
         return create_response({"error": "Error interno"}, 500)
 
+# Obtener datos de usuario actual
 @profile_service.get()
 def profile(request):
     session_user_id = request.session.get("session_user_id")

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">CRUD App</string>
+    <string name="password">Contraseña</string>
+    <string name="user">Usuario</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="welcome">Bienvenido, %1$s</string>
+    <string name="email">Correo: %1$s</string>
+    <string name="admin">Admin: %1$s</string>
 </resources>

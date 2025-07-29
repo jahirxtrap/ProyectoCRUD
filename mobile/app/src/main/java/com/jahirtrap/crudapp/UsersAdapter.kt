@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.jahirtrap.crudapp.api.UserProfile
 
 class UsersAdapter(
     private val users: List<UserProfile>,
@@ -25,8 +26,8 @@ class UsersAdapter(
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val user = users[position]
         holder.tvUsername.text = user.username
-        holder.tvEmail.text = user.email
-        holder.tvRole.text = if (user.is_admin) "Rol: Admin" else "Rol: Usuario"
+        holder.tvEmail.text = "Correo: " + user.email
+        holder.tvRole.text = if (user.is_admin) "Admin: Si" else "Admin: No"
         holder.itemView.setOnClickListener { onClick(user) }
     }
 

@@ -27,12 +27,12 @@ angular.module("ProyectoCRUDApp")
     vm.searchField = "username";
     vm.showOnlyAdmins = false;
 
-    // --- Control de autenticación ---
+    // Control de autenticación
     vm.isLoggedIn = function() {
         return vm.currentUser !== null;
     };
 
-    // función para inicializar el estado al cargar la página
+    // Inicializar e estado
     vm.init = function () {
         UserService.profile().then(function (response) {
             vm.currentUser = {
@@ -110,7 +110,7 @@ angular.module("ProyectoCRUDApp")
             });
     };
 
-    // --- Filtros de búsqueda ---
+    // Filtros de búsqueda
     vm.filteredUsers = function(user) {
         var field = vm.searchField;
         var searchText = (vm.searchText || "").toLowerCase();
@@ -129,7 +129,7 @@ angular.module("ProyectoCRUDApp")
         return true;
     };
 
-    // --- Toggle entre login y registro ---
+    // Toggle entre login y registro
     vm.toggleLogin = function() {
         vm.showLogin = true;
         vm.showRegister = false;
@@ -150,7 +150,7 @@ angular.module("ProyectoCRUDApp")
         vm.formSuccess = "";
     };
 
-    // --- CRUD de usuarios ---
+    // CRUD de usuarios
     vm.loadUsers = function() {
         UserService.getUsers().then(function(response) {
             vm.users = response.data.users;
