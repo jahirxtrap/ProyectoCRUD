@@ -38,6 +38,7 @@ class ProfileActivity : AppCompatActivity() {
                 logout()
                 return true
             }
+
             else -> return super.onOptionsItemSelected(item)
         }
     }

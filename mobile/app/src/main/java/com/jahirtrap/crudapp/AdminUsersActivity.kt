@@ -35,6 +35,21 @@ class AdminUsersActivity : AppCompatActivity() {
         rvUsers.layoutManager = LinearLayoutManager(this)
         rvUsers.adapter = adapter
 
+        val marginPx = (16 * resources.displayMetrics.density).toInt()
+
+        rvUsers.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: android.graphics.Rect,
+                view: android.view.View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                val position = parent.getChildAdapterPosition(view)
+                val itemCount = parent.adapter?.itemCount ?: 0
+                outRect.bottom = if (position < itemCount - 1) marginPx else 0
+            }
+        })
+
         loadUsers()
     }
 
@@ -44,6 +59,7 @@ class AdminUsersActivity : AppCompatActivity() {
                 logout()
                 return true
             }
+
             else -> return super.onOptionsItemSelected(item)
         }
     }
