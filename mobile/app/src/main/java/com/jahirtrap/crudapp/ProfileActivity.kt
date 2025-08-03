@@ -2,11 +2,10 @@ package com.jahirtrap.crudapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.appbar.MaterialToolbar
+import com.jahirtrap.crudapp.LoginActivity.Companion.showToast
 import com.jahirtrap.crudapp.api.ApiResponse
 import com.jahirtrap.crudapp.api.RetrofitInstance
 import com.jahirtrap.crudapp.api.UserProfile
@@ -14,39 +13,33 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class ProfileActivity : AppCompatActivity() {
-
-    private lateinit var tvWelcome: TextView
-    private lateinit var tvEmail: TextView
-    private lateinit var tvRole: TextView
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var txtWelcome: TextView
+    private lateinit var txtEmail: TextView
+    private lateinit var txtAdmin: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        tvWelcome = findViewById(R.id.tvWelcome)
-        tvEmail = findViewById(R.id.tvEmail)
-        tvRole = findViewById(R.id.tvRole)
+        toolbar = findViewById(R.id.toolbar)
+        txtWelcome = findViewById(R.id.txt_welcome)
+        txtEmail = findViewById(R.id.txt_email)
+        txtAdmin = findViewById(R.id.txt_admin)
+
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.btn_logout -> {
+                    logout()
+                    true
+                }
+
+                else -> false
+            }
+        }
 
         loadProfile()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.order) {
-            100 -> {
-                logout()
-                return true
-            }
-
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu, menu)
-        return true
     }
 
     private fun loadProfile() {
@@ -54,20 +47,17 @@ class ProfileActivity : AppCompatActivity() {
             override fun onResponse(call: Call<UserProfile>, response: Response<UserProfile>) {
                 if (response.isSuccessful && response.body() != null) {
                     val profile = response.body()!!
-                    tvWelcome.text = getString(R.string.welcome, profile.username)
-                    tvEmail.text = getString(R.string.email, profile.email)
-                    tvRole.text = getString(R.string.admin, if (profile.is_admin) "Si" else "No")
+                    val adminStatus = getString(if (profile.is_admin) R.string.yes else R.string.no)
+                    txtWelcome.text = getString(R.string.welcome, profile.username)
+                    txtEmail.text = getString(R.string.email, profile.email)
+                    txtAdmin.text = getString(R.string.admin, adminStatus)
                 } else {
-                    Toast.makeText(
-                        this@ProfileActivity,
-                        "Error al cargar perfil",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showToast(this@ProfileActivity, "Error al cargar perfil")
                 }
             }
 
             override fun onFailure(call: Call<UserProfile>, t: Throwable) {
-                Toast.makeText(this@ProfileActivity, "Error de red", Toast.LENGTH_SHORT).show()
+                showToast(this@ProfileActivity, "Error de red")
             }
         })
     }
@@ -80,11 +70,7 @@ class ProfileActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                Toast.makeText(
-                    this@ProfileActivity,
-                    "Error al cerrar sesión",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showToast(this@ProfileActivity, "Error al cerrar sesión")
             }
         })
     }

@@ -1,13 +1,15 @@
 package com.jahirtrap.crudapp
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.appbar.MaterialToolbar
+import com.jahirtrap.crudapp.LoginActivity.Companion.showToast
 import com.jahirtrap.crudapp.api.ApiResponse
 import com.jahirtrap.crudapp.api.RetrofitInstance
 import com.jahirtrap.crudapp.api.UserProfile
@@ -17,8 +19,9 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class AdminUsersActivity : AppCompatActivity() {
-
-    private lateinit var rvUsers: RecyclerView
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var refresh: SwipeRefreshLayout
+    private lateinit var rvwUsers: RecyclerView
     private lateinit var adapter: UsersAdapter
     private val users = mutableListOf<UserProfile>()
 
@@ -26,51 +29,52 @@ class AdminUsersActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_users)
 
-        rvUsers = findViewById(R.id.rvUsers)
+        toolbar = findViewById(R.id.toolbar)
+        refresh = findViewById(R.id.refresh)
+        rvwUsers = findViewById(R.id.rvw_users)
+
         adapter = UsersAdapter(users) { user ->
-            Toast.makeText(this, "Seleccionaste: ${user.username}", Toast.LENGTH_SHORT).show()
+            showToast(this@AdminUsersActivity, "Seleccionaste: ${user.username}")
             // Actividad para editar/eliminar
         }
 
-        rvUsers.layoutManager = LinearLayoutManager(this)
-        rvUsers.adapter = adapter
+        rvwUsers.layoutManager = LinearLayoutManager(this)
+        rvwUsers.adapter = adapter
 
         val marginPx = (16 * resources.displayMetrics.density).toInt()
-
-        rvUsers.addItemDecoration(object : RecyclerView.ItemDecoration() {
+        rvwUsers.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(
-                outRect: android.graphics.Rect,
-                view: android.view.View,
+                rect: Rect,
+                view: View,
                 parent: RecyclerView,
                 state: RecyclerView.State
             ) {
                 val position = parent.getChildAdapterPosition(view)
                 val itemCount = parent.adapter?.itemCount ?: 0
-                outRect.bottom = if (position < itemCount - 1) marginPx else 0
+                rect.bottom = if (position < itemCount - 1) marginPx else 0
             }
         })
+
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.btn_logout -> {
+                    logout()
+                    true
+                }
+
+                else -> false
+            }
+        }
+
+        refresh.setOnRefreshListener {
+            loadUsers()
+        }
 
         loadUsers()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.order) {
-            100 -> {
-                logout()
-                return true
-            }
-
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu, menu)
-        return true
-    }
-
     private fun loadUsers() {
+        refresh.isRefreshing = true
         RetrofitInstance.api.getUsers().enqueue(object : Callback<UsersResponse> {
             override fun onResponse(call: Call<UsersResponse>, response: Response<UsersResponse>) {
                 if (response.isSuccessful && response.body() != null) {
@@ -78,12 +82,14 @@ class AdminUsersActivity : AppCompatActivity() {
                     users.addAll(response.body()!!.users)
                     adapter.notifyDataSetChanged()
                 } else {
-                    Toast.makeText(this@AdminUsersActivity, "Error al obtener usuarios", Toast.LENGTH_SHORT).show()
+                    showToast(this@AdminUsersActivity, "Error al obtener usuarios")
                 }
+                refresh.isRefreshing = false
             }
 
             override fun onFailure(call: Call<UsersResponse>, t: Throwable) {
-                Toast.makeText(this@AdminUsersActivity, "Error de red", Toast.LENGTH_SHORT).show()
+                refresh.isRefreshing = false
+                showToast(this@AdminUsersActivity, "Error de conexión")
             }
         })
     }
@@ -96,11 +102,7 @@ class AdminUsersActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                Toast.makeText(
-                    this@AdminUsersActivity,
-                    "Error al cerrar sesión",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showToast(this@AdminUsersActivity, "Error al cerrar sesión")
             }
         })
     }

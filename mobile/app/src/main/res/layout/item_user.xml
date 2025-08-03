@@ -12,7 +12,7 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/tvUsername"
+            android:id="@+id/txt_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -21,7 +21,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvEmail"
+            android:id="@+id/txt_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
@@ -29,7 +29,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/tvRole"
+            android:id="@+id/txt_admin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?android:textColorTertiary"

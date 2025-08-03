@@ -1,5 +1,6 @@
 package com.jahirtrap.crudapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -14,25 +15,24 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
-
-    private lateinit var etUsername: TextInputEditText
-    private lateinit var etPassword: TextInputEditText
+    private lateinit var inpUsername: TextInputEditText
+    private lateinit var inpPassword: TextInputEditText
     private lateinit var btnLogin: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        etUsername = findViewById(R.id.etUsername)
-        etPassword = findViewById(R.id.etPassword)
-        btnLogin = findViewById(R.id.btnLogin)
+        inpUsername = findViewById(R.id.inp_username)
+        inpPassword = findViewById(R.id.inp_password)
+        btnLogin = findViewById(R.id.btn_login)
 
         btnLogin.setOnClickListener {
-            val username = etUsername.text.toString()
-            val password = etPassword.text.toString()
+            val username = inpUsername.text.toString()
+            val password = inpPassword.text.toString()
 
             if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show()
+                showToast(this@LoginActivity, "Todos los campos son obligatorios")
                 return@setOnClickListener
             }
 
@@ -55,13 +55,23 @@ class LoginActivity : AppCompatActivity() {
                     }
                     finish()
                 } else {
-                    Toast.makeText(this@LoginActivity, "Credenciales inválidas", Toast.LENGTH_SHORT).show()
+                    showToast(this@LoginActivity, "Credenciales inválidas")
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                Toast.makeText(this@LoginActivity, "Error de red: ${t.message}", Toast.LENGTH_SHORT).show()
+                showToast(this@LoginActivity, "Error de conexión")
             }
         })
+    }
+
+    companion object {
+        private var toast: Toast? = null
+
+        fun showToast(context: Context, message: String?) {
+            toast?.cancel()
+            toast = Toast.makeText(context.applicationContext, message, Toast.LENGTH_SHORT)
+            toast!!.show()
+        }
     }
 }

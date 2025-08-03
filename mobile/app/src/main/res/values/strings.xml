@@ -7,4 +7,6 @@
     <string name="welcome">Bienvenido, %1$s</string>
     <string name="email">Correo: %1$s</string>
     <string name="admin">Admin: %1$s</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
 </resources>
