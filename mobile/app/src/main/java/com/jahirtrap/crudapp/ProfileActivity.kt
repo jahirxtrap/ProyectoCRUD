@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
-import com.jahirtrap.crudapp.LoginActivity.Companion.showToast
+import com.jahirtrap.crudapp.MainActivity.Companion.showToast
 import com.jahirtrap.crudapp.api.ApiResponse
 import com.jahirtrap.crudapp.api.RetrofitInstance
 import com.jahirtrap.crudapp.api.UserProfile
@@ -48,9 +48,9 @@ class ProfileActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     val profile = response.body()!!
                     val adminStatus = getString(if (profile.is_admin) R.string.yes else R.string.no)
-                    txtWelcome.text = getString(R.string.welcome, profile.username)
-                    txtEmail.text = getString(R.string.email, profile.email)
-                    txtAdmin.text = getString(R.string.admin, adminStatus)
+                    txtWelcome.text = getString(R.string.welcome_temp, profile.username)
+                    txtEmail.text = getString(R.string.email_temp, profile.email)
+                    txtAdmin.text = getString(R.string.admin_temp, adminStatus)
                 } else {
                     showToast(this@ProfileActivity, "Error al cargar perfil")
                 }
@@ -65,7 +65,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun logout() {
         RetrofitInstance.api.logout().enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                startActivity(Intent(this@ProfileActivity, LoginActivity::class.java))
+                startActivity(Intent(this@ProfileActivity, MainActivity::class.java))
                 finish()
             }
 

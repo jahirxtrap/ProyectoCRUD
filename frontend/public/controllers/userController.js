@@ -58,7 +58,7 @@ angular.module("ProyectoCRUDApp")
         UserService.login(vm.loginData).then(function(response) {
             vm.currentUser = {
                 id: response.data.id,
-                username: vm.loginData.username,
+                username: vm.loginData.username.trim(),
                 is_admin: response.data.is_admin,
             };
             vm.loginData = {};
@@ -84,19 +84,19 @@ angular.module("ProyectoCRUDApp")
         vm.registerError = null;
         vm.registerSuccess = null;
 
-        if (!vm.registerData.password || !vm.registerData.passwordRepeat) {
+        if (!vm.registerData.password || !vm.registerData.passwordConfirm) {
             vm.registerError = "Debes ingresar la contraseña dos veces.";
             return;
         }
 
-        if (vm.registerData.password !== vm.registerData.passwordRepeat) {
+        if (vm.registerData.password !== vm.registerData.passwordConfirm) {
             vm.registerError = "Las contraseñas no coinciden.";
             return;
         }
 
         var dataToSend = {
-            username: vm.registerData.username,
-            email: vm.registerData.email,
+            username: vm.registerData.username.trim(),
+            email: vm.registerData.email.trim(),
             password: vm.registerData.password
         };
 
@@ -168,6 +168,8 @@ angular.module("ProyectoCRUDApp")
     vm.createUser = function() {
         vm.formError = null;
         vm.formSuccess = null;
+        vm.userForm.username = vm.userForm.username.trim();
+        vm.userForm.email = vm.userForm.email.trim();
 
         if (!vm.userForm.username || !vm.userForm.email || !vm.userForm.password) {
             vm.formError = "Todos los campos son obligatorios";

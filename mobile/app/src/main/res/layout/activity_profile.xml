@@ -13,7 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/app_name"
-        app:menu="@menu/menu" />
+        app:menu="@menu/toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"

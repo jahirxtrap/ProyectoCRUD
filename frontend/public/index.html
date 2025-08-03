@@ -97,7 +97,7 @@
                     </div>
                     <div class="form-group" ng-init="showPassRegister2 = false">
                         <div class="input-group">
-                            <input type="{{showPassRegister2 ? 'text' : 'password'}}" ng-model="userCtrl.registerData.passwordRepeat" placeholder="Repetir contraseña" class="form-control" required>
+                            <input type="{{showPassRegister2 ? 'text' : 'password'}}" ng-model="userCtrl.registerData.passwordConfirm" placeholder="Confirmar contraseña" class="form-control" required>
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="showPassRegister2 = !showPassRegister2" ng-mousedown="$event.preventDefault()">
                                     <span class="glyphicon" ng-class="showPassRegister2 ? 'glyphicon-eye-open' : 'glyphicon-eye-close'"></span>

@@ -165,13 +165,13 @@ def login(request):
         return create_response({"error": "Contraseña incorrecta"}, 401)
 
     request.session["session_user_id"] = user.id
-    return create_response({"message": "Login exitoso", "id": user.id, "is_admin": user.is_admin}, 200)
+    return create_response({"message": "Inicio de sesión exitoso", "id": user.id, "is_admin": user.is_admin}, 200)
 
 # Cerrar sesión
 @logout_service.post()
 def logout(request):
     request.session.invalidate()
-    return create_response({"message": "Logout exitoso"}, 200)
+    return create_response({"message": "Sesión cerrada correctamente"}, 200)
 
 # Registro de usuario
 @register_service.post()
@@ -191,12 +191,12 @@ def register_user(request):
         with transaction.manager:
             DBSession.add(user)
             DBSession.flush()
-        return create_response({"message": "Usuario creado con éxito"}, 200)
+        return create_response({"message": "Usuario registrado correctamente"}, 200)
     except IntegrityError:
         return create_response({"error": "Usuario o email ya registrado"}, 409)
     except Exception as e:
         logger.error(f"Error en registro: {e}")
-        return create_response({"error": "Error interno"}, 500)
+        return create_response({"error": "Error de registro"}, 500)
 
 # Obtener datos de usuario actual
 @profile_service.get()

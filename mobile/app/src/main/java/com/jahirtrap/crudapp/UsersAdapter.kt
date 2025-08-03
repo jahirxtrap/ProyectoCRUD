@@ -27,8 +27,8 @@ class UsersAdapter(
         val context = holder.itemView.context
         val adminStatus = context.getString(if (user.is_admin) R.string.yes else R.string.no)
         holder.txtUsername.text = user.username
-        holder.txtEmail.text = context.getString(R.string.email, user.email)
-        holder.txtAdmin.text = context.getString(R.string.admin, adminStatus)
+        holder.txtEmail.text = context.getString(R.string.email_temp, user.email)
+        holder.txtAdmin.text = context.getString(R.string.admin_temp, adminStatus)
         holder.itemView.setOnClickListener { onClick(user) }
     }
 

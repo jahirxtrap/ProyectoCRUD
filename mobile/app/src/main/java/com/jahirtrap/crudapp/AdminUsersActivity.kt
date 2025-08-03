@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.MaterialToolbar
-import com.jahirtrap.crudapp.LoginActivity.Companion.showToast
+import com.jahirtrap.crudapp.MainActivity.Companion.showToast
 import com.jahirtrap.crudapp.api.ApiResponse
 import com.jahirtrap.crudapp.api.RetrofitInstance
 import com.jahirtrap.crudapp.api.UserProfile
@@ -97,7 +97,7 @@ class AdminUsersActivity : AppCompatActivity() {
     private fun logout() {
         RetrofitInstance.api.logout().enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                startActivity(Intent(this@AdminUsersActivity, LoginActivity::class.java))
+                startActivity(Intent(this@AdminUsersActivity, MainActivity::class.java))
                 finish()
             }
 
