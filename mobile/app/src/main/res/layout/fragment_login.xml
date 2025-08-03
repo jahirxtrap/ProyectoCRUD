@@ -56,6 +56,18 @@
                 android:layout_marginTop="24dp"
                 android:text="@string/login"
                 android:textAllCaps="true" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txt_register_"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:padding="4dp"
+                android:text="@string/register"
+                android:textAlignment="viewEnd"
+                android:textColor="?attr/colorPrimary" />
         </LinearLayout>
     </ScrollView>
 

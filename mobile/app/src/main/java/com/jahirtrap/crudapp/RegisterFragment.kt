@@ -1,5 +1,6 @@
 package com.jahirtrap.crudapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textview.MaterialTextView
 import com.jahirtrap.crudapp.MainActivity.Companion.showToast
 import com.jahirtrap.crudapp.api.ApiResponse
 import com.jahirtrap.crudapp.api.RegisterRequest
@@ -21,6 +23,7 @@ class RegisterFragment : Fragment() {
     private lateinit var inpPassword: TextInputEditText
     private lateinit var inpConfirmPassword: TextInputEditText
     private lateinit var btnRegister: MaterialButton
+    private lateinit var txtLogin: MaterialTextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -28,12 +31,14 @@ class RegisterFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_register, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         inpUsername = view.findViewById(R.id.inp_username)
         inpEmail = view.findViewById(R.id.inp_email)
         inpPassword = view.findViewById(R.id.inp_password)
         inpConfirmPassword = view.findViewById(R.id.inp_confirm_password)
         btnRegister = view.findViewById(R.id.btn_register)
+        txtLogin = view.findViewById(R.id.txt_login_)
 
         btnRegister.setOnClickListener {
             val username = inpUsername.text.toString().trim()
@@ -42,16 +47,21 @@ class RegisterFragment : Fragment() {
             val confirmPassword = inpConfirmPassword.text.toString()
 
             if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                MainActivity.showToast(requireContext(), "Todos los campos son obligatorios")
+                showToast(requireContext(), "Todos los campos son obligatorios")
                 return@setOnClickListener
             }
 
             if (password != confirmPassword) {
-                MainActivity.showToast(requireContext(), "Las contraseñas no coinciden")
+                showToast(requireContext(), "Las contraseñas no coinciden")
                 return@setOnClickListener
             }
 
             register(username, email, password)
+        }
+
+        txtLogin.text = "<< " + getString(R.string.login)
+        txtLogin.setOnClickListener {
+            (requireActivity() as? MainActivity)?.showPage(0)
         }
     }
 

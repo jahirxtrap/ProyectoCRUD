@@ -1,5 +1,6 @@
 package com.jahirtrap.crudapp
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textview.MaterialTextView
 import com.jahirtrap.crudapp.MainActivity.Companion.showToast
 import com.jahirtrap.crudapp.api.LoginRequest
 import com.jahirtrap.crudapp.api.LoginResponse
@@ -16,10 +18,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+@SuppressLint("SetTextI18n")
 class LoginFragment : Fragment() {
     private lateinit var inpUsername: TextInputEditText
     private lateinit var inpPassword: TextInputEditText
     private lateinit var btnLogin: MaterialButton
+    private lateinit var txtRegister: MaterialTextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -31,6 +35,7 @@ class LoginFragment : Fragment() {
         inpUsername = view.findViewById(R.id.inp_username)
         inpPassword = view.findViewById(R.id.inp_password)
         btnLogin = view.findViewById(R.id.btn_login)
+        txtRegister = view.findViewById(R.id.txt_register_)
 
         btnLogin.setOnClickListener {
             val username = inpUsername.text.toString().trim()
@@ -42,6 +47,11 @@ class LoginFragment : Fragment() {
             }
 
             login(username, password)
+        }
+
+        txtRegister.text = getString(R.string.register) + " >>"
+        txtRegister.setOnClickListener {
+            (requireActivity() as? MainActivity)?.showPage(1)
         }
     }
 

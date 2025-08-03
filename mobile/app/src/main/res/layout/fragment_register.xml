@@ -83,8 +83,19 @@
                 android:layout_marginTop="24dp"
                 android:text="@string/register"
                 android:textAllCaps="true" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txt_login_"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:padding="4dp"
+                android:text="@string/login"
+                android:textAlignment="viewStart"
+                android:textColor="?attr/colorPrimary" />
         </LinearLayout>
     </ScrollView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
