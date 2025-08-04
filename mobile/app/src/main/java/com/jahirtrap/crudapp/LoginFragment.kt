@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import com.jahirtrap.crudapp.MainActivity.Companion.showToast
@@ -20,6 +21,7 @@ import retrofit2.Response
 
 @SuppressLint("SetTextI18n")
 class LoginFragment : Fragment() {
+    private lateinit var progress: CircularProgressIndicator
     private lateinit var inpUsername: TextInputEditText
     private lateinit var inpPassword: TextInputEditText
     private lateinit var btnLogin: MaterialButton
@@ -32,6 +34,7 @@ class LoginFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        progress = view.findViewById(R.id.progress)
         inpUsername = view.findViewById(R.id.inp_username)
         inpPassword = view.findViewById(R.id.inp_password)
         btnLogin = view.findViewById(R.id.btn_login)
@@ -56,9 +59,13 @@ class LoginFragment : Fragment() {
     }
 
     private fun login(username: String, password: String) {
+        progress.visibility = View.VISIBLE
+        btnLogin.isEnabled = false
         val request = LoginRequest(username, password)
         RetrofitInstance.api.login(request).enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                progress.visibility = View.GONE
+                btnLogin.isEnabled = true
                 if (response.isSuccessful && response.body() != null) {
                     val user = response.body()!!
                     val context = requireContext()
@@ -77,6 +84,8 @@ class LoginFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                progress.visibility = View.GONE
+                btnLogin.isEnabled = true
                 showToast(requireContext(), "Error de conexión")
             }
         })

@@ -15,5 +15,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Frontend corriendo en http://192.168.1.11:${PORT}`);
+  console.log(`Frontend corriendo en http://192.168.12.1:${PORT}`);
 });

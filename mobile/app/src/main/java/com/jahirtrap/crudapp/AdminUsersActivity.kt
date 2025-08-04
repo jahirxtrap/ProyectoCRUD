@@ -49,9 +49,9 @@ class AdminUsersActivity : AppCompatActivity() {
                 parent: RecyclerView,
                 state: RecyclerView.State
             ) {
-                val position = parent.getChildAdapterPosition(view)
-                val itemCount = parent.adapter?.itemCount ?: 0
-                rect.bottom = if (position < itemCount - 1) marginPx else 0
+                if (parent.getChildAdapterPosition(view) == 0) {
+                    rect.top = marginPx
+                }
             }
         })
 
@@ -77,6 +77,7 @@ class AdminUsersActivity : AppCompatActivity() {
         refresh.isRefreshing = true
         RetrofitInstance.api.getUsers().enqueue(object : Callback<UsersResponse> {
             override fun onResponse(call: Call<UsersResponse>, response: Response<UsersResponse>) {
+                refresh.isRefreshing = false
                 if (response.isSuccessful && response.body() != null) {
                     users.clear()
                     users.addAll(response.body()!!.users)
@@ -84,7 +85,6 @@ class AdminUsersActivity : AppCompatActivity() {
                 } else {
                     showToast(this@AdminUsersActivity, "Error al obtener usuarios")
                 }
-                refresh.isRefreshing = false
             }
 
             override fun onFailure(call: Call<UsersResponse>, t: Throwable) {

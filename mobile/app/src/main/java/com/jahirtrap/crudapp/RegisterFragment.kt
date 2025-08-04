@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import com.jahirtrap.crudapp.MainActivity.Companion.showToast
@@ -18,6 +19,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class RegisterFragment : Fragment() {
+    private lateinit var progress: CircularProgressIndicator
     private lateinit var inpUsername: TextInputEditText
     private lateinit var inpEmail: TextInputEditText
     private lateinit var inpPassword: TextInputEditText
@@ -33,6 +35,7 @@ class RegisterFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        progress = view.findViewById(R.id.progress)
         inpUsername = view.findViewById(R.id.inp_username)
         inpEmail = view.findViewById(R.id.inp_email)
         inpPassword = view.findViewById(R.id.inp_password)
@@ -66,9 +69,13 @@ class RegisterFragment : Fragment() {
     }
 
     private fun register(username: String, email: String, password: String) {
+        progress.visibility = View.VISIBLE
+        btnRegister.isEnabled = false
         val request = RegisterRequest(username, email, password)
         RetrofitInstance.api.register(request).enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                progress.visibility = View.GONE
+                btnRegister.isEnabled = true
                 if (response.isSuccessful) {
                     showToast(requireContext(), "Usuario registrado correctamente")
                     (requireActivity() as? MainActivity)?.showPage(0)
@@ -78,6 +85,8 @@ class RegisterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                progress.visibility = View.GONE
+                btnRegister.isEnabled = true
                 showToast(requireContext(), "Error de conexión")
             }
         })

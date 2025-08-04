@@ -10,7 +10,7 @@ object RetrofitInstance {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    private const val BASE_URL = "http://192.168.1.11:5000/"
+    private const val BASE_URL = "http://192.168.12.1:5000"
 
     private val cookieJar = SessionCookieJar()
 
