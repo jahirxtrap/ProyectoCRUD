@@ -29,16 +29,21 @@ class ProfileActivity : AppCompatActivity() {
         txtEmail = findViewById(R.id.txt_email)
         txtAdmin = findViewById(R.id.txt_admin)
 
-        toolbar.menu[1].isVisible = true
+        toolbar.menu[0].isVisible = true
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
+                R.id.action_logout -> {
+                    logout()
+                    true
+                }
+
                 R.id.action_settings -> {
                     startActivity(Intent(this, SettingsActivity::class.java))
                     true
                 }
 
-                R.id.action_logout -> {
-                    logout()
+                R.id.action_about -> {
+                    startActivity(Intent(this, AboutActivity::class.java))
                     true
                 }
 

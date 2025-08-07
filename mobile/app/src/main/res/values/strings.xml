@@ -10,13 +10,14 @@
     <string name="email_temp">Correo: %1$s</string>
     <string name="admin_temp">Admin: %1$s</string>
     <string name="email">Correo</string>
-    <string name="settings">Configuración</string>
+    <string name="settings">Ajustes</string>
+    <string name="about">Acerca de</string>
 
     <!-- Settings -->
     <string name="api_url_key">api_url_preference</string>
     <string name="api_url_title">URL de la API</string>
-    <string name="api_url_summary">URL: %1$s</string>
-    <string name="api_url_default">http://192.168.12.1:3000</string>
+    <string name="api_url_summary">%1$s</string>
+    <string name="api_url_default">http://192.168.12.1:5000</string>
     <string name="reset_preferences_key">reset_preferences</string>
     <string name="reset_preferences_title">Valores predeterminados</string>
     <string name="reset_preferences_alert_message">¿Está seguro de que desea restablecer las configuraciones a sus valores predeterminados?</string>
@@ -26,4 +27,13 @@
     <string name="no">No</string>
     <string name="accept">Aceptar</string>
     <string name="cancel">Cancelar</string>
+
+    <!-- About -->
+    <string name="description">Aplicación móvil para la gestión de usuarios desarrollada en Kotlin, se conecta a una API REST que permite realizar operaciones POST, GET, PUT y DELETE.</string>
+    <string name="version">Versión: %1$s</string>
+    <string name="developer">Desarrollador: https://github.com/jahirxtrap</string>
+    <string name="repository">Repositorio: https://github.com/jahirxtrap/ProyectoCRUD</string>
+    <string name="logo">Logo</string>
+    <string name="profile_dev">Developer</string>
+    <string name="info">Información de la app</string>
 </resources>
