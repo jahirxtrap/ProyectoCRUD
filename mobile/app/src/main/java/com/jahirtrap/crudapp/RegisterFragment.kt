@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -19,7 +19,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class RegisterFragment : Fragment() {
-    private lateinit var progress: ProgressBar
+    private lateinit var progress: FrameLayout
     private lateinit var inpUsername: TextInputEditText
     private lateinit var inpEmail: TextInputEditText
     private lateinit var inpPassword: TextInputEditText
