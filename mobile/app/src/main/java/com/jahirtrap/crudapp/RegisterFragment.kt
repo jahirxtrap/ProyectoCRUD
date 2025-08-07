@@ -5,21 +5,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import com.jahirtrap.crudapp.MainActivity.Companion.showToast
+import com.jahirtrap.crudapp.api.ApiProvider
 import com.jahirtrap.crudapp.api.ApiResponse
 import com.jahirtrap.crudapp.api.RegisterRequest
-import com.jahirtrap.crudapp.api.RetrofitInstance
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class RegisterFragment : Fragment() {
-    private lateinit var progress: CircularProgressIndicator
+    private lateinit var progress: ProgressBar
     private lateinit var inpUsername: TextInputEditText
     private lateinit var inpEmail: TextInputEditText
     private lateinit var inpPassword: TextInputEditText
@@ -35,7 +35,7 @@ class RegisterFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        progress = view.findViewById(R.id.progress)
+        progress = requireActivity().findViewById(R.id.progress)
         inpUsername = view.findViewById(R.id.inp_username)
         inpEmail = view.findViewById(R.id.inp_email)
         inpPassword = view.findViewById(R.id.inp_password)
@@ -72,23 +72,24 @@ class RegisterFragment : Fragment() {
         progress.visibility = View.VISIBLE
         btnRegister.isEnabled = false
         val request = RegisterRequest(username, email, password)
-        RetrofitInstance.api.register(request).enqueue(object : Callback<ApiResponse> {
-            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                progress.visibility = View.GONE
-                btnRegister.isEnabled = true
-                if (response.isSuccessful) {
-                    showToast(requireContext(), "Usuario registrado correctamente")
-                    (requireActivity() as? MainActivity)?.showPage(0)
-                } else {
-                    showToast(requireContext(), response.body()?.message ?: "Error de registro")
+        ApiProvider.getApi(requireContext()).register(request)
+            .enqueue(object : Callback<ApiResponse> {
+                override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                    progress.visibility = View.GONE
+                    btnRegister.isEnabled = true
+                    if (response.isSuccessful) {
+                        showToast(requireContext(), "Usuario registrado correctamente")
+                        (requireActivity() as? MainActivity)?.showPage(0)
+                    } else {
+                        showToast(requireContext(), response.body()?.message ?: "Error de registro")
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                progress.visibility = View.GONE
-                btnRegister.isEnabled = true
-                showToast(requireContext(), "Error de conexión")
-            }
-        })
+                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                    progress.visibility = View.GONE
+                    btnRegister.isEnabled = true
+                    showToast(requireContext(), "Error de conexión")
+                }
+            })
     }
 }

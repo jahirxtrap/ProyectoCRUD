@@ -6,22 +6,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import com.jahirtrap.crudapp.MainActivity.Companion.showToast
+import com.jahirtrap.crudapp.api.ApiProvider
 import com.jahirtrap.crudapp.api.LoginRequest
 import com.jahirtrap.crudapp.api.LoginResponse
-import com.jahirtrap.crudapp.api.RetrofitInstance
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 @SuppressLint("SetTextI18n")
 class LoginFragment : Fragment() {
-    private lateinit var progress: CircularProgressIndicator
+    private lateinit var progress: ProgressBar
     private lateinit var inpUsername: TextInputEditText
     private lateinit var inpPassword: TextInputEditText
     private lateinit var btnLogin: MaterialButton
@@ -34,7 +34,7 @@ class LoginFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        progress = view.findViewById(R.id.progress)
+        progress = requireActivity().findViewById(R.id.progress)
         inpUsername = view.findViewById(R.id.inp_username)
         inpPassword = view.findViewById(R.id.inp_password)
         btnLogin = view.findViewById(R.id.btn_login)
@@ -62,32 +62,35 @@ class LoginFragment : Fragment() {
         progress.visibility = View.VISIBLE
         btnLogin.isEnabled = false
         val request = LoginRequest(username, password)
-        RetrofitInstance.api.login(request).enqueue(object : Callback<LoginResponse> {
-            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                progress.visibility = View.GONE
-                btnLogin.isEnabled = true
-                if (response.isSuccessful && response.body() != null) {
-                    val user = response.body()!!
-                    val context = requireContext()
+        ApiProvider.getApi(requireContext()).login(request)
+            .enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(
+                    call: Call<LoginResponse>,
+                    response: Response<LoginResponse>
+                ) {
+                    progress.visibility = View.GONE
+                    btnLogin.isEnabled = true
+                    if (response.isSuccessful && response.body() != null) {
+                        val user = response.body()!!
+                        val context = requireContext()
 
-                    if (user.is_admin) {
-                        startActivity(Intent(context, AdminUsersActivity::class.java))
+                        if (user.is_admin) {
+                            startActivity(Intent(context, AdminUsersActivity::class.java))
+                        } else {
+                            val intent = Intent(context, ProfileActivity::class.java)
+                            intent.putExtra("username", username)
+                            startActivity(intent)
+                        }
                     } else {
-                        val intent = Intent(context, ProfileActivity::class.java)
-                        intent.putExtra("username", username)
-                        startActivity(intent)
+                        showToast(requireContext(), "Credenciales inválidas")
                     }
-                    requireActivity().finish()
-                } else {
-                    showToast(requireContext(), "Credenciales inválidas")
                 }
-            }
 
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                progress.visibility = View.GONE
-                btnLogin.isEnabled = true
-                showToast(requireContext(), "Error de conexión")
-            }
-        })
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    progress.visibility = View.GONE
+                    btnLogin.isEnabled = true
+                    showToast(requireContext(), "Error de conexión")
+                }
+            })
     }
 }

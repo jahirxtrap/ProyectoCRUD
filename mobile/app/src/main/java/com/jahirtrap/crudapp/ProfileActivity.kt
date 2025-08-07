@@ -4,10 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import com.google.android.material.appbar.MaterialToolbar
 import com.jahirtrap.crudapp.MainActivity.Companion.showToast
+import com.jahirtrap.crudapp.api.ApiProvider
 import com.jahirtrap.crudapp.api.ApiResponse
-import com.jahirtrap.crudapp.api.RetrofitInstance
 import com.jahirtrap.crudapp.api.UserProfile
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,9 +29,15 @@ class ProfileActivity : AppCompatActivity() {
         txtEmail = findViewById(R.id.txt_email)
         txtAdmin = findViewById(R.id.txt_admin)
 
+        toolbar.menu[1].isVisible = true
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.btn_logout -> {
+                R.id.action_settings -> {
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                    true
+                }
+
+                R.id.action_logout -> {
                     logout()
                     true
                 }
@@ -43,7 +50,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun loadProfile() {
-        RetrofitInstance.api.getProfile().enqueue(object : Callback<UserProfile> {
+        ApiProvider.getApi(this).getProfile().enqueue(object : Callback<UserProfile> {
             override fun onResponse(call: Call<UserProfile>, response: Response<UserProfile>) {
                 if (response.isSuccessful && response.body() != null) {
                     val profile = response.body()!!
@@ -57,13 +64,13 @@ class ProfileActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<UserProfile>, t: Throwable) {
-                showToast(this@ProfileActivity, "Error de red")
+                showToast(this@ProfileActivity, "Error de conexión")
             }
         })
     }
 
     private fun logout() {
-        RetrofitInstance.api.logout().enqueue(object : Callback<ApiResponse> {
+        ApiProvider.getApi(this).logout().enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                 startActivity(Intent(this@ProfileActivity, MainActivity::class.java))
                 finish()

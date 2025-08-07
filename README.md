@@ -23,7 +23,7 @@ Aplicación web y móvil para la gestión de usuarios, desarrollada con **Pyrami
 
 ### Base de datos
 
-1. Crear una base de datos PostgreSQL.
+1. Crear una base de datos vacía en PostgreSQL.
 2. Configurar la URL de conexión en el archivo `development.ini`:
 
 ```ini
@@ -33,7 +33,7 @@ sqlalchemy.url = postgresql://usuario:contraseña@hostname:puerto/nombre_base_de
 <details>
   <summary><strong>Problemas comunes (Haz clic para ver)</strong></summary>
 
-  Si tienes problemas al conectar, crear servidores o usuarios en PostgreSQL, prueba lo siguiente:
+  Si tienes problemas al conectar, crear servidores o usuarios en PostgreSQL en Linux, prueba lo siguiente:
 
   ```bash
   psql --version

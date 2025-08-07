@@ -5,13 +5,14 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.jahirtrap.crudapp.MainActivity.Companion.showToast
+import com.jahirtrap.crudapp.api.ApiProvider
 import com.jahirtrap.crudapp.api.ApiResponse
-import com.jahirtrap.crudapp.api.RetrofitInstance
 import com.jahirtrap.crudapp.api.UserProfile
 import com.jahirtrap.crudapp.api.UsersResponse
 import retrofit2.Call
@@ -55,9 +56,15 @@ class AdminUsersActivity : AppCompatActivity() {
             }
         })
 
+        toolbar.menu[1].isVisible = true
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.btn_logout -> {
+                R.id.action_settings -> {
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                    true
+                }
+
+                R.id.action_logout -> {
                     logout()
                     true
                 }
@@ -75,7 +82,7 @@ class AdminUsersActivity : AppCompatActivity() {
 
     private fun loadUsers() {
         refresh.isRefreshing = true
-        RetrofitInstance.api.getUsers().enqueue(object : Callback<UsersResponse> {
+        ApiProvider.getApi(this).getUsers().enqueue(object : Callback<UsersResponse> {
             override fun onResponse(call: Call<UsersResponse>, response: Response<UsersResponse>) {
                 refresh.isRefreshing = false
                 if (response.isSuccessful && response.body() != null) {
@@ -95,7 +102,7 @@ class AdminUsersActivity : AppCompatActivity() {
     }
 
     private fun logout() {
-        RetrofitInstance.api.logout().enqueue(object : Callback<ApiResponse> {
+        ApiProvider.getApi(this).logout().enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                 startActivity(Intent(this@AdminUsersActivity, MainActivity::class.java))
                 finish()
