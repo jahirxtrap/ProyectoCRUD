@@ -3,12 +3,16 @@ package com.jahirtrap.crudapp
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class MainActivity : AppCompatActivity() {
     private lateinit var toolbar: MaterialToolbar
@@ -57,6 +61,49 @@ class MainActivity : AppCompatActivity() {
             toast?.cancel()
             toast = Toast.makeText(context.applicationContext, message, Toast.LENGTH_SHORT)
             toast!!.show()
+        }
+
+        fun showDialog(
+            context: Context,
+            title: CharSequence? = "",
+            message: CharSequence? = null,
+            inputText: String? = null,
+            onPositive: (input: String?) -> Unit,
+            onNegative: (() -> Unit)? = null
+        ) {
+            val inputLayout: TextInputLayout? = inputText?.let {
+                val layout = TextInputLayout(context).apply {
+                    setPadding(
+                        (16 * context.resources.displayMetrics.density).toInt(),
+                        0,
+                        (16 * context.resources.displayMetrics.density).toInt(),
+                        0
+                    )
+                }
+                val editText = TextInputEditText(context).apply { setText(it) }
+                layout.addView(editText)
+                layout.postDelayed({
+                    editText.apply {
+                        requestFocus()
+                        setSelection(text?.length ?: 0)
+                        val imm =
+                            context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+                    }
+                }, 100)
+                layout
+            }
+
+            MaterialAlertDialogBuilder(context)
+                .setTitle(title)
+                .apply {
+                    message?.let { setMessage(it) }
+                    inputLayout?.let { setView(it) }
+                }
+                .setPositiveButton(R.string.accept) { _, _ ->
+                    val input = inputLayout?.editText?.text?.toString()
+                    onPositive(input)
+                }.setNegativeButton(R.string.cancel) { _, _ -> onNegative?.invoke() }.show()
         }
     }
 }

@@ -2,7 +2,10 @@ package com.jahirtrap.crudapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import com.google.android.material.appbar.MaterialToolbar
@@ -15,6 +18,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ProfileActivity : AppCompatActivity() {
+    private lateinit var progress: FrameLayout
     private lateinit var toolbar: MaterialToolbar
     private lateinit var txtWelcome: TextView
     private lateinit var txtEmail: TextView
@@ -24,6 +28,7 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
+        progress = findViewById(R.id.progress)
         toolbar = findViewById(R.id.toolbar)
         txtWelcome = findViewById(R.id.txt_welcome)
         txtEmail = findViewById(R.id.txt_email)
@@ -52,6 +57,10 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         loadProfile()
+
+        onBackPressedDispatcher.addCallback(this) {
+            logout()
+        }
     }
 
     private fun loadProfile() {
@@ -75,15 +84,31 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun logout() {
-        ApiProvider.getApi(this).logout().enqueue(object : Callback<ApiResponse> {
-            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                startActivity(Intent(this@ProfileActivity, MainActivity::class.java))
-                finish()
-            }
+        MainActivity.Companion.showDialog(
+            context = this@ProfileActivity,
+            title = getString(R.string.logout),
+            message = getString(R.string.logout_alert_message),
+            onPositive = {
+                progress.visibility = View.VISIBLE
+                ApiProvider.getApi(this).logout().enqueue(object : Callback<ApiResponse> {
+                    override fun onResponse(
+                        call: Call<ApiResponse>,
+                        response: Response<ApiResponse>
+                    ) {
+                        progress.visibility = View.GONE
+                        val intent = Intent(this@ProfileActivity, MainActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        finish()
+                    }
 
-            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                showToast(this@ProfileActivity, "Error al cerrar sesión")
+                    override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                        progress.visibility = View.GONE
+                        showToast(this@ProfileActivity, "Error al cerrar sesión")
+                    }
+                })
             }
-        })
+        )
     }
 }

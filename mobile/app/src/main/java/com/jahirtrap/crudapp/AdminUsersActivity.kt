@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class AdminUsersActivity : AppCompatActivity() {
+    private lateinit var progress: FrameLayout
     private lateinit var toolbar: MaterialToolbar
     private lateinit var refresh: SwipeRefreshLayout
     private lateinit var rvwUsers: RecyclerView
@@ -30,6 +33,7 @@ class AdminUsersActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_users)
 
+        progress = findViewById(R.id.progress)
         toolbar = findViewById(R.id.toolbar)
         refresh = findViewById(R.id.refresh)
         rvwUsers = findViewById(R.id.rvw_users)
@@ -83,6 +87,10 @@ class AdminUsersActivity : AppCompatActivity() {
         }
 
         loadUsers()
+
+        onBackPressedDispatcher.addCallback(this) {
+            logout()
+        }
     }
 
     private fun loadUsers() {
@@ -107,15 +115,31 @@ class AdminUsersActivity : AppCompatActivity() {
     }
 
     private fun logout() {
-        ApiProvider.getApi(this).logout().enqueue(object : Callback<ApiResponse> {
-            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                startActivity(Intent(this@AdminUsersActivity, MainActivity::class.java))
-                finish()
-            }
+        MainActivity.Companion.showDialog(
+            context = this@AdminUsersActivity,
+            title = getString(R.string.logout),
+            message = getString(R.string.logout_alert_message),
+            onPositive = {
+                progress.visibility = View.VISIBLE
+                ApiProvider.getApi(this).logout().enqueue(object : Callback<ApiResponse> {
+                    override fun onResponse(
+                        call: Call<ApiResponse>,
+                        response: Response<ApiResponse>
+                    ) {
+                        progress.visibility = View.GONE
+                        val intent = Intent(this@AdminUsersActivity, MainActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        finish()
+                    }
 
-            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                showToast(this@AdminUsersActivity, "Error al cerrar sesión")
+                    override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                        progress.visibility = View.GONE
+                        showToast(this@AdminUsersActivity, "Error al cerrar sesión")
+                    }
+                })
             }
-        })
+        )
     }
 }

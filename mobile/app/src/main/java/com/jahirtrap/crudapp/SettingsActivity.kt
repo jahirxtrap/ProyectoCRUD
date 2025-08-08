@@ -2,16 +2,13 @@ package com.jahirtrap.crudapp
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
+import com.jahirtrap.crudapp.MainActivity.Companion.showDialog
 import com.jahirtrap.crudapp.api.ApiProvider
 
 class SettingsActivity : AppCompatActivity() {
@@ -45,6 +42,7 @@ class SettingsActivity : AppCompatActivity() {
 
                 preference.setOnPreferenceClickListener {
                     showDialog(
+                        context = requireContext(),
                         title = preference.title,
                         inputText = value,
                         onPositive = { input ->
@@ -61,6 +59,7 @@ class SettingsActivity : AppCompatActivity() {
 
             findPreference<Preference>(getString(R.string.reset_preferences_key))?.setOnPreferenceClickListener {
                 showDialog(
+                    context = requireContext(),
                     title = getString(R.string.reset_preferences_title),
                     message = getString(R.string.reset_preferences_alert_message),
                     onPositive = {
@@ -79,49 +78,6 @@ class SettingsActivity : AppCompatActivity() {
                 )
                 true
             }
-        }
-
-        fun showDialog(
-            title: CharSequence? = "",
-            message: CharSequence? = null,
-            inputText: String? = null,
-            onPositive: (input: String?) -> Unit,
-            onNegative: (() -> Unit)? = null
-        ) {
-            val context = requireContext()
-            val inputLayout: TextInputLayout? = inputText?.let {
-                val layout = TextInputLayout(context).apply {
-                    setPadding(
-                        (16 * context.resources.displayMetrics.density).toInt(),
-                        0,
-                        (16 * context.resources.displayMetrics.density).toInt(),
-                        0
-                    )
-                }
-                val editText = TextInputEditText(context).apply { setText(it) }
-                layout.addView(editText)
-                layout.postDelayed({
-                    editText.apply {
-                        requestFocus()
-                        setSelection(text?.length ?: 0)
-                        val imm =
-                            context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-                    }
-                }, 100)
-                layout
-            }
-
-            MaterialAlertDialogBuilder(context)
-                .setTitle(title)
-                .apply {
-                    message?.let { setMessage(it) }
-                    inputLayout?.let { setView(it) }
-                }
-                .setPositiveButton(R.string.accept) { _, _ ->
-                    val input = inputLayout?.editText?.text?.toString()
-                    onPositive(input)
-                }.setNegativeButton(R.string.cancel) { _, _ -> onNegative?.invoke() }.show()
         }
     }
 }

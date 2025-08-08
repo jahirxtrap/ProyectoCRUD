@@ -25,6 +25,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            applicationVariants.all {
+                outputs.all {
+                    val outputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+                    val version = defaultConfig.versionName
+                    outputImpl.outputFileName = "CRUDApp-$version.apk"
+                }
+            }
         }
     }
     compileOptions {

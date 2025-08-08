@@ -12,6 +12,7 @@
     <string name="email">Correo</string>
     <string name="settings">Ajustes</string>
     <string name="about">Acerca de</string>
+    <string name="logout_alert_message">¿Está seguro de que desea cerrar sesión?</string>
 
     <!-- Settings -->
     <string name="api_url_key">api_url_preference</string>
