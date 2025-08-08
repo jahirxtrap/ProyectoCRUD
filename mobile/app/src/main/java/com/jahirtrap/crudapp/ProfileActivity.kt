@@ -9,7 +9,7 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import com.google.android.material.appbar.MaterialToolbar
-import com.jahirtrap.crudapp.MainActivity.Companion.showToast
+import com.jahirtrap.crudapp.MainActivity.Companion.showSnackbar
 import com.jahirtrap.crudapp.api.ApiProvider
 import com.jahirtrap.crudapp.api.ApiResponse
 import com.jahirtrap.crudapp.api.UserProfile
@@ -73,12 +73,12 @@ class ProfileActivity : AppCompatActivity() {
                     txtEmail.text = getString(R.string.email_temp, profile.email)
                     txtAdmin.text = getString(R.string.admin_temp, adminStatus)
                 } else {
-                    showToast(this@ProfileActivity, "Error al cargar perfil")
+                    showSnackbar(this@ProfileActivity, "Error al cargar perfil")
                 }
             }
 
             override fun onFailure(call: Call<UserProfile>, t: Throwable) {
-                showToast(this@ProfileActivity, "Error de conexión")
+                showSnackbar(this@ProfileActivity, "Error de conexión")
             }
         })
     }
@@ -105,7 +105,7 @@ class ProfileActivity : AppCompatActivity() {
 
                     override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                         progress.visibility = View.GONE
-                        showToast(this@ProfileActivity, "Error al cerrar sesión")
+                        showSnackbar(this@ProfileActivity, "Error al cerrar sesión")
                     }
                 })
             }

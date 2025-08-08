@@ -6,6 +6,7 @@
     <string name="login">Iniciar sesión</string>
     <string name="register">Registrarse</string>
     <string name="logout">Cerrar sesión</string>
+    <string name="close">Cerrar</string>
     <string name="welcome_temp">Bienvenido, %1$s</string>
     <string name="email_temp">Correo: %1$s</string>
     <string name="admin_temp">Admin: %1$s</string>

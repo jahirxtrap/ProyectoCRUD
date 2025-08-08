@@ -3,5 +3,8 @@
     <style name="Theme.Custom" parent="Theme.Material3.DynamicColors.Dark.NoActionBar">
         <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
+        <item name="snackbarTextViewStyle">@style/Widget.App.Snackbar.TextView</item>
+        <item name="snackbarButtonStyle">@style/Widget.App.Snackbar.TextButton</item>
     </style>
 </resources>

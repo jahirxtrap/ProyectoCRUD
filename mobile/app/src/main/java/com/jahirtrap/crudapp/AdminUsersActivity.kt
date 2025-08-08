@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.MaterialToolbar
-import com.jahirtrap.crudapp.MainActivity.Companion.showToast
+import com.jahirtrap.crudapp.MainActivity.Companion.showSnackbar
 import com.jahirtrap.crudapp.api.ApiProvider
 import com.jahirtrap.crudapp.api.ApiResponse
 import com.jahirtrap.crudapp.api.UserProfile
@@ -39,7 +39,7 @@ class AdminUsersActivity : AppCompatActivity() {
         rvwUsers = findViewById(R.id.rvw_users)
 
         adapter = UsersAdapter(users) { user ->
-            showToast(this@AdminUsersActivity, "Seleccionaste: ${user.username}")
+            showSnackbar(this@AdminUsersActivity, "Seleccionaste: ${user.username}")
             // Actividad para editar/eliminar
         }
 
@@ -103,13 +103,13 @@ class AdminUsersActivity : AppCompatActivity() {
                     users.addAll(response.body()!!.users)
                     adapter.notifyDataSetChanged()
                 } else {
-                    showToast(this@AdminUsersActivity, "Error al obtener usuarios")
+                    showSnackbar(this@AdminUsersActivity, "Error al obtener usuarios")
                 }
             }
 
             override fun onFailure(call: Call<UsersResponse>, t: Throwable) {
                 refresh.isRefreshing = false
-                showToast(this@AdminUsersActivity, "Error de conexión")
+                showSnackbar(this@AdminUsersActivity, "Error de conexión")
             }
         })
     }
@@ -136,7 +136,7 @@ class AdminUsersActivity : AppCompatActivity() {
 
                     override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                         progress.visibility = View.GONE
-                        showToast(this@AdminUsersActivity, "Error al cerrar sesión")
+                        showSnackbar(this@AdminUsersActivity, "Error al cerrar sesión")
                     }
                 })
             }

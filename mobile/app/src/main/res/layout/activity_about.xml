@@ -73,7 +73,7 @@
                         android:layout_height="64dp"
                         android:layout_gravity="center_vertical"
                         android:contentDescription="@string/profile_dev"
-                        app:shapeAppearanceOverlay="@style/circleImageView"
+                        app:shapeAppearanceOverlay="@style/Widget.App.CircleImageView"
                         app:srcCompat="@drawable/profile_dev" />
 
                     <Space
@@ -98,7 +98,7 @@
                 android:id="@+id/repository_link"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:autoLink="web"
                 android:gravity="center"
                 android:text="@string/repository"

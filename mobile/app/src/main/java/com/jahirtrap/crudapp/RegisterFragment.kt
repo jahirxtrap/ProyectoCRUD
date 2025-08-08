@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
-import com.jahirtrap.crudapp.MainActivity.Companion.showToast
+import com.jahirtrap.crudapp.MainActivity.Companion.showSnackbar
 import com.jahirtrap.crudapp.api.ApiProvider
 import com.jahirtrap.crudapp.api.ApiResponse
 import com.jahirtrap.crudapp.api.RegisterRequest
@@ -50,12 +50,12 @@ class RegisterFragment : Fragment() {
             val confirmPassword = inpConfirmPassword.text.toString()
 
             if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                showToast(requireContext(), "Todos los campos son obligatorios")
+                showSnackbar(requireActivity(), "Todos los campos son obligatorios")
                 return@setOnClickListener
             }
 
             if (password != confirmPassword) {
-                showToast(requireContext(), "Las contraseñas no coinciden")
+                showSnackbar(requireActivity(), "Las contraseñas no coinciden")
                 return@setOnClickListener
             }
 
@@ -78,17 +78,17 @@ class RegisterFragment : Fragment() {
                     progress.visibility = View.GONE
                     btnRegister.isEnabled = true
                     if (response.isSuccessful) {
-                        showToast(requireContext(), "Usuario registrado correctamente")
+                        showSnackbar(requireActivity(), "Usuario registrado correctamente")
                         (requireActivity() as? MainActivity)?.showPage(0)
                     } else {
-                        showToast(requireContext(), response.body()?.message ?: "Error de registro")
+                        showSnackbar(requireActivity(), "Error de registro")
                     }
                 }
 
                 override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                     progress.visibility = View.GONE
                     btnRegister.isEnabled = true
-                    showToast(requireContext(), "Error de conexión")
+                    showSnackbar(requireActivity(), "Error de conexión")
                 }
             })
     }

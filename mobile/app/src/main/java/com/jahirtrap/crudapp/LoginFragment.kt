@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
-import com.jahirtrap.crudapp.MainActivity.Companion.showToast
+import com.jahirtrap.crudapp.MainActivity.Companion.showSnackbar
 import com.jahirtrap.crudapp.api.ApiProvider
 import com.jahirtrap.crudapp.api.LoginRequest
 import com.jahirtrap.crudapp.api.LoginResponse
@@ -45,7 +45,7 @@ class LoginFragment : Fragment() {
             val password = inpPassword.text.toString()
 
             if (username.isEmpty() || password.isEmpty()) {
-                showToast(requireContext(), "Todos los campos son obligatorios")
+                showSnackbar(requireActivity(), "Todos los campos son obligatorios")
                 return@setOnClickListener
             }
 
@@ -82,14 +82,14 @@ class LoginFragment : Fragment() {
                             startActivity(intent)
                         }
                     } else {
-                        showToast(requireContext(), "Credenciales inválidas")
+                        showSnackbar(requireActivity(), "Credenciales inválidas")
                     }
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                     progress.visibility = View.GONE
                     btnLogin.isEnabled = true
-                    showToast(requireContext(), "Error de conexión")
+                    showSnackbar(requireActivity(), "Error de conexión")
                 }
             })
     }

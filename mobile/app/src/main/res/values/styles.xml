@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="circleImageView" parent="">
-        <item name="cornerFamily">rounded</item>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="PrivateResource">
+    <style name="Widget.App.CircleImageView" parent="">
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="Widget.App.Snackbar" parent="Widget.Material3.Snackbar">
+        <item name="android:backgroundTint">?attr/colorSurfaceContainerHigh</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="elevation">@dimen/m3_sys_elevation_level2</item>
+        <item name="shapeAppearance">?attr/shapeAppearanceCornerLarge</item>
+    </style>
+
+    <style name="Widget.App.Snackbar.TextView" parent="Widget.Material3.Snackbar.TextView">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="Widget.App.Snackbar.TextButton" parent="Widget.Material3.Button.TextButton.Snackbar">
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 </resources>

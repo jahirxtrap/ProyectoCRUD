@@ -4,13 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
+import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -55,12 +56,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private var toast: Toast? = null
-
-        fun showToast(context: Context, message: String?) {
-            toast?.cancel()
-            toast = Toast.makeText(context.applicationContext, message, Toast.LENGTH_SHORT)
-            toast!!.show()
+        fun showSnackbar(activity: FragmentActivity, message: String?) {
+            message?.let {
+                Snackbar.make(
+                    activity.findViewById(android.R.id.content),
+                    it,
+                    Snackbar.LENGTH_SHORT
+                ).setAction(R.string.close) { }.show()
+            }
         }
 
         fun showDialog(
